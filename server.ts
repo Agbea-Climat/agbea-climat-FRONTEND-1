@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import crypto from 'crypto';
-import express from 'express';
-import type { Request, Response } from 'express';
+import express, { type Request, type Response } from "express";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI, Type } from '@google/genai';
