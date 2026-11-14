@@ -13,10 +13,10 @@ import {
 import { Download, ExternalLink, Info } from 'lucide-react';
 import { useApp } from '../context/AppContext.tsx';
 import {
+  downloadTimeseriesCsv,
   getDatasets,
   getRegionCompare,
   getRegionTimeseries,
-  getTimeseriesExportUrl,
 } from '../services/climateApi.ts';
 import type {
   DatasetInfo,
@@ -246,14 +246,14 @@ export function ScientificModePage() {
               <span className="text-xs text-[#475569]">
                 Source: {timeseries.source_name}
               </span>
-              <a
-                href={getTimeseriesExportUrl(regionId, indicator, months)}
-                download
-                className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-[#0F2942] hover:bg-[#163656] text-white rounded transition-colors"
+              <button
+                type="button"
+                onClick={() => downloadTimeseriesCsv(regionId, indicator, months)}
+                className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-[#0F2942] hover:bg-[#163656] text-white rounded transition-colors cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Download (CSV)</span>
-              </a>
+              </button>
             </div>
           </div>
 

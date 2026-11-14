@@ -113,7 +113,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const recheckHealth = useCallback(async () => {
     try {
-      const h = await getHealth();
+      const h = await getHealth(true);
       const ok = h.status === 'ok';
       setApiHealthy(ok);
       if (ok) {

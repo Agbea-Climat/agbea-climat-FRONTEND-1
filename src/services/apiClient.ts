@@ -1,11 +1,16 @@
 /**
  * Single configurable HTTP client targeting /api/v1 (or VITE_API_BASE_URL).
- * Replace VITE_API_BASE_URL in .env to connect directly to the team's backend.
+ * Automatically detects static hosting (e.g. Vercel without an /api/v1 server)
+ * and enables direct NASA POWER/GIBS client mode when no local backend is mounted.
  */
 
 export const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || '/api/v1'
 ).replace(/\/$/, '');
+
+export const HAS_CUSTOM_BACKEND = Boolean(
+  import.meta.env.VITE_API_BASE_URL && import.meta.env.VITE_API_BASE_URL !== '/api/v1'
+);
 
 export class ApiError extends Error {
   status: number;
@@ -18,7 +23,51 @@ export class ApiError extends Error {
   }
 }
 
-export function buildApiUrl(path: string, query?: Record<string, string | number | undefined | null>): string {
+let probePromise: Promise<'backend' | 'standalone' | 'offline'> | null = null;
+
+export function resetBackendProbe(): void {
+  probePromise = null;
+}
+
+export async function detectBackendMode(): Promise<'backend' | 'standalone' | 'offline'> {
+  if (probePromise) return probePromise;
+
+  probePromise = (async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/health`, {
+        headers: { Accept: 'application/json' },
+      });
+      const contentType = response.headers.get('content-type') || '';
+
+      if (response.ok && contentType.includes('application/json')) {
+        const data = await response.json().catch(() => null);
+        if (data && data.status === 'ok') {
+          return 'backend';
+        }
+        return 'offline';
+      }
+
+      // On static hosts like Vercel without a mounted /api/v1 server,
+      // /api/v1/health returns 404 or SPA HTML fallback (text/html).
+      if (!HAS_CUSTOM_BACKEND && (response.status === 404 || !contentType.includes('application/json'))) {
+        if (response.status < 500) {
+          return 'standalone';
+        }
+      }
+
+      return 'offline';
+    } catch {
+      return 'offline';
+    }
+  })();
+
+  return probePromise;
+}
+
+export function buildApiUrl(
+  path: string,
+  query?: Record<string, string | number | undefined | null>
+): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   const base = `${API_BASE_URL}${normalized}`;
   if (!query) return base;

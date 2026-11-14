@@ -1,4 +1,12 @@
-import { API_BASE_URL, buildApiUrl, requestJson } from './apiClient.ts';
+import {
+  API_BASE_URL,
+  ApiError,
+  buildApiUrl,
+  detectBackendMode,
+  requestJson,
+  resetBackendProbe,
+} from './apiClient.ts';
+import { standaloneApi } from './standaloneApi.ts';
 import type {
   AgricultureModeResponse,
   BeforeAfterLayersResponse,
@@ -29,33 +37,51 @@ import type {
   TimeseriesResponse,
 } from '../types/apiContract.ts';
 
+async function isStandalone(): Promise<boolean> {
+  const mode = await detectBackendMode();
+  return mode === 'standalone';
+}
+
 /** M01 GET /health */
-export function getHealth(): Promise<HealthResponse> {
+export async function getHealth(forceRefresh = false): Promise<HealthResponse> {
+  if (forceRefresh) resetBackendProbe();
+  const mode = await detectBackendMode();
+  if (mode === 'standalone') {
+    return standaloneApi.getHealth();
+  }
+  if (mode === 'offline') {
+    resetBackendProbe();
+    throw new ApiError('Service temporarily unavailable', 503, 'service_unavailable');
+  }
   return requestJson<HealthResponse>('/health');
 }
 
 /** M02 GET /meta */
-export function getMeta(): Promise<MetaResponse> {
+export async function getMeta(): Promise<MetaResponse> {
+  if (await isStandalone()) return standaloneApi.getMeta();
   return requestJson<MetaResponse>('/meta');
 }
 
 /** M27 GET /profiles */
-export function getProfiles(): Promise<ProfilesResponse> {
+export async function getProfiles(): Promise<ProfilesResponse> {
+  if (await isStandalone()) return standaloneApi.getProfiles();
   return requestJson<ProfilesResponse>('/profiles');
 }
 
 /** M03 POST /sessions */
-export function createSession(): Promise<SessionResponse> {
+export async function createSession(): Promise<SessionResponse> {
+  if (await isStandalone()) return standaloneApi.createSession();
   return requestJson<SessionResponse>('/sessions', { method: 'POST' });
 }
 
 /** M04 GET /sessions/{id} */
-export function getSession(sessionId: string): Promise<SessionResponse> {
+export async function getSession(sessionId: string): Promise<SessionResponse> {
+  if (await isStandalone()) return standaloneApi.getSession(sessionId);
   return requestJson<SessionResponse>(`/sessions/${encodeURIComponent(sessionId)}`);
 }
 
 /** M05 PATCH /sessions/{id}/preferences */
-export function patchSessionPreferences(
+export async function patchSessionPreferences(
   sessionId: string,
   prefs: Partial<{
     profile: ProfileId;
@@ -65,6 +91,9 @@ export function patchSessionPreferences(
     onboarding_completed: boolean;
   }>
 ): Promise<SessionResponse> {
+  if (await isStandalone()) {
+    return standaloneApi.patchSessionPreferences(sessionId, prefs);
+  }
   return requestJson<SessionResponse>(
     `/sessions/${encodeURIComponent(sessionId)}/preferences`,
     {
@@ -75,46 +104,54 @@ export function patchSessionPreferences(
 }
 
 /** M06 GET /regions */
-export function getRegions(): Promise<RegionsResponse> {
+export async function getRegions(): Promise<RegionsResponse> {
+  if (await isStandalone()) return standaloneApi.getRegions();
   return requestJson<RegionsResponse>('/regions');
 }
 
 /** M07 GET /regions/geojson */
-export function getRegionsGeoJson(): Promise<RegionsGeoJsonResponse> {
+export async function getRegionsGeoJson(): Promise<RegionsGeoJsonResponse> {
+  if (await isStandalone()) return standaloneApi.getRegionsGeoJson();
   return requestJson<RegionsGeoJsonResponse>('/regions/geojson');
 }
 
 /** M08 GET /regions/{id} */
-export function getRegion(regionId: RegionId): Promise<RegionInfo> {
+export async function getRegion(regionId: RegionId): Promise<RegionInfo> {
+  if (await isStandalone()) return standaloneApi.getRegion(regionId);
   return requestJson<RegionInfo>(`/regions/${encodeURIComponent(regionId)}`);
 }
 
 /** M09 GET /locate?lon&lat */
-export function locateRegion(lon: number, lat: number): Promise<LocateResponse> {
+export async function locateRegion(lon: number, lat: number): Promise<LocateResponse> {
+  if (await isStandalone()) return standaloneApi.locateRegion(lon, lat);
   return requestJson<LocateResponse>('/locate', { query: { lon, lat } });
 }
 
 /** M10 GET /indicators */
-export function getIndicators(): Promise<IndicatorsResponse> {
+export async function getIndicators(): Promise<IndicatorsResponse> {
+  if (await isStandalone()) return standaloneApi.getIndicators();
   return requestJson<IndicatorsResponse>('/indicators');
 }
 
 /** M11 GET /datasets */
-export function getDatasets(): Promise<DatasetsResponse> {
+export async function getDatasets(): Promise<DatasetsResponse> {
+  if (await isStandalone()) return standaloneApi.getDatasets();
   return requestJson<DatasetsResponse>('/datasets');
 }
 
 /** M12 GET /datasets/{id} */
-export function getDataset(datasetId: string): Promise<DatasetInfo> {
+export async function getDataset(datasetId: string): Promise<DatasetInfo> {
+  if (await isStandalone()) return standaloneApi.getDataset(datasetId);
   return requestJson<DatasetInfo>(`/datasets/${encodeURIComponent(datasetId)}`);
 }
 
 /** M13 GET /layers?mode= */
-export function getLayer(params: {
+export async function getLayer(params: {
   indicator: IndicatorId;
   mode: ExperienceMode;
   date?: string;
 }): Promise<MapLayerResponse> {
+  if (await isStandalone()) return standaloneApi.getLayer(params);
   return requestJson<MapLayerResponse>('/layers', {
     query: {
       indicator: params.indicator,
@@ -125,10 +162,11 @@ export function getLayer(params: {
 }
 
 /** M14 GET /regions/{id}/summary */
-export function getRegionSummary(
+export async function getRegionSummary(
   regionId: RegionId,
   profile?: ProfileId | null
 ): Promise<RegionSummaryResponse> {
+  if (await isStandalone()) return standaloneApi.getRegionSummary(regionId, profile);
   return requestJson<RegionSummaryResponse>(
     `/regions/${encodeURIComponent(regionId)}/summary`,
     { query: { profile: profile || undefined } }
@@ -136,11 +174,14 @@ export function getRegionSummary(
 }
 
 /** M15 GET /regions/{id}/timeseries */
-export function getRegionTimeseries(
+export async function getRegionTimeseries(
   regionId: RegionId,
   indicatorId: IndicatorId,
   months = 12
 ): Promise<TimeseriesResponse> {
+  if (await isStandalone()) {
+    return standaloneApi.getRegionTimeseries(regionId, indicatorId, months);
+  }
   return requestJson<TimeseriesResponse>(
     `/regions/${encodeURIComponent(regionId)}/timeseries`,
     { query: { indicator: indicatorId, months } }
@@ -148,7 +189,7 @@ export function getRegionTimeseries(
 }
 
 /** M16 GET /regions/{id}/compare */
-export function getRegionCompare(params: {
+export async function getRegionCompare(params: {
   regionId: RegionId;
   indicator: IndicatorId;
   startA: number;
@@ -156,6 +197,7 @@ export function getRegionCompare(params: {
   startB: number;
   endB: number;
 }): Promise<RegionCompareResponse> {
+  if (await isStandalone()) return standaloneApi.getRegionCompare(params);
   return requestJson<RegionCompareResponse>(
     `/regions/${encodeURIComponent(params.regionId)}/compare`,
     {
@@ -182,13 +224,43 @@ export function getTimeseriesExportUrl(
   });
 }
 
+export async function downloadTimeseriesCsv(
+  regionId: RegionId,
+  indicatorId: IndicatorId,
+  months = 24
+): Promise<void> {
+  const filename = `agbea-${regionId}-${indicatorId}.csv`;
+  if (await isStandalone()) {
+    const csv = await standaloneApi.buildTimeseriesCsv(regionId, indicatorId, months);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    return;
+  }
+
+  const exportUrl = getTimeseriesExportUrl(regionId, indicatorId, months);
+  const a = document.createElement('a');
+  a.href = exportUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
 /** M18 GET /layers/{id}/before-after */
-export function getBeforeAfterLayers(params: {
+export async function getBeforeAfterLayers(params: {
   indicator: IndicatorId;
   regionId: RegionId;
   dateA: string;
   dateB: string;
 }): Promise<BeforeAfterLayersResponse> {
+  if (await isStandalone()) return standaloneApi.getBeforeAfterLayers(params);
   return requestJson<BeforeAfterLayersResponse>(
     `/layers/${encodeURIComponent(params.indicator)}/before-after`,
     {
@@ -202,23 +274,26 @@ export function getBeforeAfterLayers(params: {
 }
 
 /** M19 GET /dashboard */
-export function getDashboard(profile?: ProfileId | null): Promise<DashboardResponse> {
+export async function getDashboard(profile?: ProfileId | null): Promise<DashboardResponse> {
+  if (await isStandalone()) return standaloneApi.getDashboard(profile);
   return requestJson<DashboardResponse>('/dashboard', {
     query: { profile: profile || undefined },
   });
 }
 
 /** M20 GET /regions/{id}/agriculture */
-export function getRegionAgriculture(
+export async function getRegionAgriculture(
   regionId: RegionId
 ): Promise<AgricultureModeResponse> {
+  if (await isStandalone()) return standaloneApi.getRegionAgriculture(regionId);
   return requestJson<AgricultureModeResponse>(
     `/regions/${encodeURIComponent(regionId)}/agriculture`
   );
 }
 
 /** M21 POST /voice/transcribe (Expected 501 while in development) */
-export function transcribeVoice(): Promise<{ message: string }> {
+export async function transcribeVoice(): Promise<{ message: string }> {
+  if (await isStandalone()) return standaloneApi.transcribeVoice();
   return requestJson<{ message: string }>('/voice/transcribe', {
     method: 'POST',
     body: JSON.stringify({}),
@@ -226,12 +301,13 @@ export function transcribeVoice(): Promise<{ message: string }> {
 }
 
 /** M24 POST /explain */
-export function explainIndicator(payload: {
+export async function explainIndicator(payload: {
   region_id: RegionId;
   indicator_id: IndicatorId;
   profile: ProfileId | null;
   language: LanguageCode;
 }): Promise<ExplainResponse> {
+  if (await isStandalone()) return standaloneApi.explainIndicator(payload);
   return requestJson<ExplainResponse>('/explain', {
     method: 'POST',
     body: JSON.stringify(payload),
@@ -239,7 +315,7 @@ export function explainIndicator(payload: {
 }
 
 /** M26 POST /chat (fallback non-streaming) */
-export function sendChatFallback(payload: {
+export async function sendChatFallback(payload: {
   session_id?: string | null;
   thread_id?: string | null;
   message: string;
@@ -248,6 +324,7 @@ export function sendChatFallback(payload: {
   language: LanguageCode;
   mode: ExperienceMode;
 }): Promise<ChatResponse> {
+  if (await isStandalone()) return standaloneApi.buildChatReply(payload);
   return requestJson<ChatResponse>('/chat', {
     method: 'POST',
     body: JSON.stringify(payload),
@@ -275,6 +352,25 @@ export async function streamChat(
   },
   signal?: AbortSignal
 ): Promise<void> {
+  if (await isStandalone()) {
+    callbacks.onStatus?.(
+      payload.language === 'fr' ? 'Récupération des données NASA…' : 'Fetching NASA data…'
+    );
+    const reply = await standaloneApi.buildChatReply(payload);
+    callbacks.onMeta?.({ thread_id: reply.thread_id });
+    callbacks.onStatus?.(payload.language === 'fr' ? 'Rédaction…' : 'Writing…');
+    const words = reply.answer.split(' ');
+    for (let i = 0; i < words.length; i++) {
+      if (signal?.aborted) break;
+      callbacks.onToken?.((i === 0 ? '' : ' ') + words[i]);
+      await new Promise((r) => setTimeout(r, 12));
+    }
+    if (reply.chart) callbacks.onData?.(reply.chart);
+    callbacks.onSources?.(reply.sources);
+    callbacks.onDone?.();
+    return;
+  }
+
   const response = await fetch(`${API_BASE_URL}/chat/stream`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
