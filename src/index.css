@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --agbea-navy: #0F2942;
+    --agbea-forest: #1A5E36;
+    --agbea-accent: #0E7490;
+    --agbea-surface: #F7F9F8;
+    --agbea-border: #DCE3E1;
+  }
+
+  html {
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    color: #1E293B;
+    background-color: #FFFFFF;
+  }
+
+  .font-mono {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.leaflet-container {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  background-color: #EFF4F3;
+}
+
+.leaflet-control-attribution {
+  font-size: 11px !important;
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  color: #475569 !important;
+}

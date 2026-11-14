@@ -1,0 +1,6 @@
+{
+  "name": "AGBÉA CLIMAT",
+  "description": "Plateforme d'intelligence climatique utilisant les observations satellitaires de la NASA pour rendre les données environnementales accessibles au Togo et en Afrique.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
