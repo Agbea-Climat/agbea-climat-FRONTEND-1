@@ -44,7 +44,7 @@ interface AppContextValue {
     onboarding_completed?: boolean;
   }) => Promise<void>;
   refreshSession: () => Promise<void>;
-  recheckHealth: () => Promise<void>;
+  recheckHealth: () => Promise<boolean>;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -66,15 +66,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const [showProfilePicker, setShowProfilePicker] = useState<boolean>(false);
   const [activeDatasetId, setActiveDatasetId] = useState<string | null>(null);
-
-  const recheckHealth = useCallback(async () => {
-    try {
-      const h = await getHealth();
-      setApiHealthy(h.status === 'ok');
-    } catch {
-      setApiHealthy(false);
-    }
-  }, []);
 
   const hydrateSession = useCallback(async () => {
     const existingId = localStorage.getItem('session_id');
@@ -113,13 +104,61 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  useEffect(() => {
-    recheckHealth();
+  const loadBootstrapData = useCallback(() => {
     getMeta().then(setMeta).catch(() => {});
     getProfiles().then((res) => setProfiles(res.profiles)).catch(() => {});
     getRegions().then((res) => setRegions(res.regions)).catch(() => {});
     hydrateSession();
-  }, [recheckHealth, hydrateSession]);
+  }, [hydrateSession]);
+
+  const recheckHealth = useCallback(async () => {
+    try {
+      const h = await getHealth();
+      const ok = h.status === 'ok';
+      setApiHealthy(ok);
+      if (ok) {
+        loadBootstrapData();
+      }
+      return ok;
+    } catch {
+      setApiHealthy(false);
+      return false;
+    }
+  }, [loadBootstrapData]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const h = await getHealth();
+        if (cancelled) return;
+        setApiHealthy(h.status === 'ok');
+      } catch {
+        // Wait briefly in case backend is warming up before showing banner
+        await new Promise((r) => setTimeout(r, 1200));
+        if (cancelled) return;
+        try {
+          const retry = await getHealth();
+          if (cancelled) return;
+          setApiHealthy(retry.status === 'ok');
+        } catch {
+          if (!cancelled) setApiHealthy(false);
+        }
+      }
+    })();
+    loadBootstrapData();
+    return () => {
+      cancelled = true;
+    };
+  }, [loadBootstrapData]);
+
+  useEffect(() => {
+    if (apiHealthy) return;
+    const timer = window.setInterval(() => {
+      recheckHealth();
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [apiHealthy, recheckHealth]);
 
   const updatePreferences = useCallback(
     async (patch: {

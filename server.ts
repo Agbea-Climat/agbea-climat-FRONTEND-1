@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import crypto from 'crypto';
+import fs from 'fs';
 import express, { type Request, type Response } from "express";
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -29,7 +30,19 @@ import type {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PORT = 3000;
+
+function resolvePort(): number {
+  const portFlagIdx = process.argv.indexOf('--port');
+  if (portFlagIdx !== -1 && process.argv[portFlagIdx + 1]) {
+    return Number(process.argv[portFlagIdx + 1]) || 3000;
+  }
+  if (process.env.NGINX_PORT) {
+    return Number(process.env.DEFAULT_APP_PORT) || 3000;
+  }
+  return Number(process.env.PORT || process.env.DEFAULT_APP_PORT) || 3000;
+}
+
+const PORT = resolvePort();
 const CACHE_TTL_MS = 15 * 60 * 1000;
 
 /* -------------------------------------------------------------------------- */
@@ -1820,7 +1833,14 @@ Monthly 2025: ${JSON.stringify(monthly2025)}`;
 
   app.use('/api/v1', v1);
 
-  if (process.env.NODE_ENV !== 'production') {
+  app.use('/api', (_req: Request, res: Response) => {
+    res.status(404).json({ code: 'not_found', message: 'API endpoint not found' });
+  });
+
+  const distPath = path.resolve(__dirname, 'dist');
+  const hasDistBuild = fs.existsSync(path.join(distPath, 'index.html'));
+
+  if (process.env.NODE_ENV !== 'production' || !hasDistBuild) {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -1828,7 +1848,6 @@ Monthly 2025: ${JSON.stringify(monthly2025)}`;
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.resolve(__dirname, 'dist');
     app.use(express.static(distPath));
     app.get('*', (_req: Request, res: Response) => {
       res.sendFile(path.join(distPath, 'index.html'));
