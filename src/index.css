@@ -28,6 +28,8 @@
 .leaflet-container {
   font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   background-color: #EFF4F3;
+  z-index: 0;
+  isolation: isolate;
 }
 
 .leaflet-control-attribution {

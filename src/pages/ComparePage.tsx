@@ -217,7 +217,7 @@ export function ComparePage() {
               </span>
             </div>
 
-            <div className="relative h-[440px] border border-[#DCE3E1] rounded overflow-hidden">
+            <div className="relative z-0 isolate h-[440px] border border-[#DCE3E1] rounded overflow-hidden">
               {/* Right layer (full background) */}
               <div className="absolute inset-0">
                 <TogoLeafletMap

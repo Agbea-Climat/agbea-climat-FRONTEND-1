@@ -200,7 +200,7 @@ export function TogoLeafletMap({
   return (
     <div
       ref={containerRef}
-      className={`w-full ${heightClassName} border border-[#DCE3E1] rounded overflow-hidden`}
+      className={`relative z-0 isolate w-full ${heightClassName} border border-[#DCE3E1] rounded overflow-hidden`}
       aria-label="Interactive Map of Togo"
     />
   );

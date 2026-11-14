@@ -59,7 +59,7 @@ export function Navbar() {
   };
 
   return (
-    <div className="sticky top-0 z-40">
+    <div className="sticky top-0 z-[1100]">
       {/* M01 Global Health Banner */}
       {!apiHealthy && (
         <div

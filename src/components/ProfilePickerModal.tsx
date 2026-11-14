@@ -40,7 +40,7 @@ export function ProfilePickerModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-[#0F2942]/60 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[1200] bg-[#0F2942]/60 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="profile-picker-title"
