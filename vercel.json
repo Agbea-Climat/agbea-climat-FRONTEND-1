@@ -1,7 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/((?!api/|assets/).*)",
+      "source": "/agbea-api/:path*",
+      "destination": "https://agbea.api.pepit.cloud/api/v1/:path*"
+    },
+    {
+      "source": "/((?!api/|agbea-api/|assets/).*)",
       "destination": "/index.html"
     }
   ]

@@ -26,6 +26,7 @@ import {
   adaptRegionSummary,
   adaptSession,
   adaptTimeseries,
+  pickClosestDate,
   chartFromSeries,
   chartFromSnapshots,
   regionValuesFromDashboard,
@@ -455,9 +456,34 @@ export async function getBeforeAfterLayers(params: {
 }): Promise<BeforeAfterLayersResponse> {
   if (await isStandalone()) return standaloneApi.getBeforeAfterLayers(params);
   if (await isEnvelopedBackend()) {
+    // The backend only accepts dates that exist for the layer (GET /layers → available_dates; e.g. IMERG
+    // tiles cover the last 90 days, LST stops in 2022). Snap both dates to the closest available image.
+    const layerId = toBackendIndicator(params.indicator);
+    let before = params.dateA;
+    let after = params.dateB;
+    try {
+      let layersPromise = layersCache.get('public');
+      if (!layersPromise) {
+        layersPromise = requestJson<BackendLayer[]>('/layers', { query: { mode: 'public' } });
+        layersCache.set('public', layersPromise);
+        layersPromise.catch(() => layersCache.delete('public'));
+      }
+      const dates = (await layersPromise).find((l) => l.id === layerId)?.available_dates || [];
+      if (dates.length) {
+        before = pickClosestDate(dates, params.dateA) || before;
+        after = pickClosestDate(dates, params.dateB) || after;
+        if (before >= after) {
+          // Both dates outside the layer range: compare its first and last images instead
+          before = dates[0];
+          after = dates[dates.length - 1];
+        }
+      }
+    } catch {
+      // Layer list unavailable: send the requested dates as they are
+    }
     const raw = await requestJson<BackendBeforeAfter>(
-      `/layers/${encodeURIComponent(toBackendIndicator(params.indicator))}/before-after`,
-      { query: { before: params.dateA, after: params.dateB, region_id: params.regionId } }
+      `/layers/${encodeURIComponent(layerId)}/before-after`,
+      { query: { before, after, region_id: params.regionId } }
     );
     return adaptBeforeAfter(raw, params.indicator, params.regionId);
   }

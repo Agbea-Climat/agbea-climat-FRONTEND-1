@@ -314,7 +314,7 @@ export function adaptLayer(
   };
 }
 
-function pickClosestDate(dates: string[], target?: string): string | null {
+export function pickClosestDate(dates: string[], target?: string): string | null {
   if (!dates.length) return null;
   if (!target) return dates[dates.length - 1];
   const t = Date.parse(target);
@@ -382,6 +382,7 @@ export function adaptTimeseries(raw: BackendTimeseries, months?: number): Timese
     dataset_id: raw.dataset_id,
     source_name: datasetName(raw.dataset_id),
     unit: raw.units,
+    baseline_period: raw.baseline_period,
     series: points.map((p) => ({
       date: p.date,
       label_fr: monthLabel(p.date, 'fr'),

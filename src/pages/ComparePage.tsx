@@ -44,7 +44,8 @@ export function ComparePage() {
     setLoading(true);
     setError(null);
     try {
-      const [cmp, layers] = await Promise.all([
+      // allSettled: the numerical comparison stays visible even if the map pair cannot be loaded
+      const [cmpRes, layersRes] = await Promise.allSettled([
         getRegionCompare({
           regionId: selectedRegion,
           indicator,
@@ -60,8 +61,9 @@ export function ComparePage() {
           dateB,
         }),
       ]);
-      setCompareData(cmp);
-      setLayerPair(layers);
+      if (cmpRes.status === 'rejected' && layersRes.status === 'rejected') throw cmpRes.reason;
+      setCompareData(cmpRes.status === 'fulfilled' ? cmpRes.value : null);
+      setLayerPair(layersRes.status === 'fulfilled' ? layersRes.value : null);
     } catch (err: any) {
       setError(err?.message || 'Unable to load comparison.');
     } finally {

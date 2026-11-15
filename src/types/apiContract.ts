@@ -214,6 +214,8 @@ export interface TimeseriesResponse {
   source_name: string;
   unit: string;
   series: TimeseriesPoint[];
+  /** Normal (baseline) period, e.g. ["2001", "2020"] from the backend; absent in standalone mode */
+  baseline_period?: [string, string];
 }
 
 /** M16 GET /regions/{id}/compare */

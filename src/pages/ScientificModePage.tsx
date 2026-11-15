@@ -232,7 +232,7 @@ export function ScientificModePage() {
                   <Line
                     type="monotone"
                     dataKey="normal"
-                    name={language === 'fr' ? 'Normale (2020–2024)' : 'Normal (2020–2024)'}
+                    name={`${language === 'fr' ? 'Normale' : 'Normal'} (${(timeseries.baseline_period || ['2020', '2024']).join('–')})`}
                     stroke="#0F2942"
                     strokeWidth={2}
                     strokeDasharray="4 4"
