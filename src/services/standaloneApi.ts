@@ -1064,10 +1064,26 @@ export const standaloneApi = {
         }
       : null;
 
-    const answer =
-      payload.language === 'fr'
-        ? `Pour la région ${region.name} (chef-lieu ${region.capital}), les observations NASA de septembre 2025 indiquent : précipitations de ${rain?.value ?? 'N/D'} mm (${rain?.trend_text_fr}), indice d’humidité végétale de ${green?.value ?? 'N/D'} (${green?.trend_text_fr}) et température de surface du sol de ${lst?.value ?? 'N/D'} °C. ${region.climate_zone_fr}.`
-        : `For the ${region.name} region (capital ${region.capital}), September 2025 NASA observations show: rainfall at ${rain?.value ?? 'N/A'} mm (${rain?.trend_text_en}), vegetation moisture index at ${green?.value ?? 'N/A'} (${green?.trend_text_en}), and land surface temperature at ${lst?.value ?? 'N/A'} °C. ${region.climate_zone_en}.`;
+    const isFarmer = payload.profile === 'farmer';
+    const cropsList = (payload.language === 'fr' ? region.crops_fr : region.crops_en)
+      .slice(0, 3)
+      .join(', ');
+    const farmTipFr =
+      rain?.trend === 'below_normal'
+        ? `La pluie étant inférieure à la normale, gardez le sol couvert avec du paillage pour protéger l’humidité autour de vos cultures comme ${cropsList}.`
+        : `Profitez de l’humidité actuelle tout en surveillant le drainage de vos parcelles de ${cropsList}.`;
+    const farmTipEn =
+      rain?.trend === 'below_normal'
+        ? `Because rain is below normal, mulch your soil to hold moisture for crops like ${cropsList}.`
+        : `Moisture is holding steady, so keep monitoring field drainage for crops like ${cropsList}.`;
+
+    const answer = isFarmer
+      ? payload.language === 'fr'
+        ? `Dans la région ${region.name}, les pluies observées en septembre sont de ${rain?.value ?? 'N/D'} millimètres et la température du sol est de ${lst?.value ?? 'N/D'} degrés Celsius. ${farmTipFr}`
+        : `In the ${region.name} region, observed September rainfall is ${rain?.value ?? 'N/A'} millimeters and ground temperature is ${lst?.value ?? 'N/A'} degrees Celsius. ${farmTipEn}`
+      : payload.language === 'fr'
+      ? `Pour la région ${region.name} (chef-lieu ${region.capital}), les observations NASA de septembre 2025 indiquent : précipitations de ${rain?.value ?? 'N/D'} mm (${rain?.trend_text_fr}), indice d’humidité végétale de ${green?.value ?? 'N/D'} (${green?.trend_text_fr}) et température de surface du sol de ${lst?.value ?? 'N/D'} °C. ${region.climate_zone_fr}.`
+      : `For the ${region.name} region (capital ${region.capital}), September 2025 NASA observations show: rainfall at ${rain?.value ?? 'N/A'} mm (${rain?.trend_text_en}), vegetation moisture index at ${green?.value ?? 'N/A'} (${green?.trend_text_en}), and land surface temperature at ${lst?.value ?? 'N/A'} °C. ${region.climate_zone_en}.`;
 
     if (payload.session_id) {
       const map = loadSessionsMap();

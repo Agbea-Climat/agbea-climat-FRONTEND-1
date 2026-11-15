@@ -291,13 +291,44 @@ export async function getRegionAgriculture(
   );
 }
 
-/** M21 POST /voice/transcribe (Expected 501 while in development) */
+/** M21 POST /voice/transcribe (Expected 501 while in development for non-farmer M21 test) */
 export async function transcribeVoice(): Promise<{ message: string }> {
   if (await isStandalone()) return standaloneApi.transcribeVoice();
   return requestJson<{ message: string }>('/voice/transcribe', {
     method: 'POST',
     body: JSON.stringify({}),
   });
+}
+
+/** Farmer Voice Assistant: Transcribe recorded speech (FR / EN) */
+export async function transcribeVoiceAudio(payload: {
+  audioBase64: string;
+  mimeType: string;
+  language: LanguageCode;
+}): Promise<{ text: string }> {
+  if (await isStandalone()) {
+    throw new ApiError('Server transcription unavailable in standalone mode.', 501);
+  }
+  return requestJson<{ text: string }>('/voice/transcribe', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+/** Farmer Voice Assistant: Synthesize spoken WAV reply via Gemini TTS when backend is active */
+export async function synthesizeSpeech(payload: {
+  text: string;
+  language: LanguageCode;
+}): Promise<{ audioBase64: string; mimeType: string } | null> {
+  if (await isStandalone()) return null;
+  try {
+    return await requestJson<{ audioBase64: string; mimeType: string }>('/voice/speak', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  } catch {
+    return null;
+  }
 }
 
 /** M24 POST /explain */

@@ -4,7 +4,7 @@ import fs from 'fs';
 import express, { type Request, type Response } from "express";
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { GoogleGenAI, Type } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel, Type } from '@google/genai';
 import type {
   AgricultureModeResponse,
   ConversationSummary,
@@ -414,11 +414,12 @@ function pointInPolygon(lon: number, lat: number, polygon: [number, number][]): 
   return inside;
 }
 
-function getGeminiClient(): GoogleGenAI {
+function getGeminiClient(apiVersion?: 'v1' | 'v1beta'): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY is not configured on the server.');
   return new GoogleGenAI({
     apiKey,
+    ...(apiVersion ? { apiVersion } : {}),
     httpOptions: { headers: { 'User-Agent': 'aistudio-build' } },
   });
 }
@@ -1468,12 +1469,85 @@ async function startServer() {
     }
   });
 
-  /* M21 POST /voice/transcribe (501 Not Implemented while voice is in development) */
-  v1.post('/voice/transcribe', (_req: Request, res: Response) => {
-    res.status(501).json({
-      code: 'not_implemented',
-      message: 'Voice is coming soon',
-    });
+  /* M21 POST /voice/transcribe (501 without audio payload; Gemini 3.5 Transcribe when audioBase64 is provided) */
+  v1.post('/voice/transcribe', async (req: Request, res: Response) => {
+    const { audioBase64, mimeType = 'audio/webm' } = req.body || {};
+    if (!audioBase64 || typeof audioBase64 !== 'string') {
+      res.status(501).json({
+        code: 'not_implemented',
+        message: 'Voice is coming soon',
+      });
+      return;
+    }
+
+    try {
+      const cleanBase64 = audioBase64.replace(/^data:[^;]+;base64,/, '');
+      const cleanMime = String(mimeType).split(';')[0] || 'audio/webm';
+      const ai = getGeminiClient();
+      const resp = await ai.models.generateContent({
+        model: 'gemini-3.5-transcribe',
+        contents: {
+          parts: [
+            {
+              inlineData: {
+                mimeType: cleanMime,
+                data: cleanBase64,
+              },
+            },
+            {
+              text: 'Transcribe this audio verbatim in French or English. Return only the spoken words without extra commentary.',
+            },
+          ],
+        },
+      });
+      res.json({ text: (resp.text || '').trim() });
+    } catch (err: any) {
+      res.status(502).json({
+        code: 'transcription_failed',
+        message: err?.message || 'Unable to transcribe audio.',
+      });
+    }
+  });
+
+  /* Farmer Voice Assistant TTS: POST /voice/speak */
+  v1.post('/voice/speak', async (req: Request, res: Response) => {
+    const { text, language = 'fr' } = req.body || {};
+    if (!text || typeof text !== 'string') {
+      res.status(400).json({ message: 'Text is required.' });
+      return;
+    }
+
+    try {
+      const ai = getGeminiClient('v1beta');
+      const resp = await ai.models.generateContent({
+        model: 'gemini-3.8-flash-lite-tts',
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text }],
+          },
+        ],
+        config: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName: 'Kore' },
+            },
+          },
+        },
+      });
+
+      const base64Audio =
+        resp.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if (!base64Audio) {
+        res.status(502).json({ message: 'No audio output generated.' });
+        return;
+      }
+
+      res.json({ audioBase64: base64Audio, mimeType: 'audio/wav' });
+    } catch (err: any) {
+      res.status(502).json({ message: err?.message || 'Voice synthesis failed.' });
+    }
   });
 
   /* M24 POST /explain */
@@ -1679,8 +1753,38 @@ Tag each sentence's nature as "observed" (direct figure), "interpreted" (meaning
       { dataset_id: 'modis_ndvi', name: 'NASA MODIS NDVI / POWER' },
     ];
 
+    const buildDeterministicChatAnswer = (): string => {
+      const rainCard = summary?.indicators.find((c) => c.indicator_id === 'rainfall');
+      const vegCard = summary?.indicators.find((c) => c.indicator_id === 'greenness');
+      const lstCard = summary?.indicators.find((c) => c.indicator_id === 'lst');
+
+      if (params.profileId === 'farmer') {
+        const crops = (params.language === 'fr' ? region.crops_fr : region.crops_en)
+          .slice(0, 3)
+          .join(', ');
+        if (params.language === 'fr') {
+          return `Dans la région ${region.name}, les pluies observées sont de ${rainCard?.value ?? 'N/D'} millimètres et l’humidité de la végétation est de ${vegCard?.value ?? 'N/D'}. ${rainCard?.plain_sentence_fr || ''} Pour vos cultures comme ${crops}, adaptez l’arrosage et protégez l’humidité du sol autour des jeunes plants.`;
+        }
+        return `In ${region.name}, recent rainfall is ${rainCard?.value ?? 'N/A'} millimeters and vegetation moisture is ${vegCard?.value ?? 'N/A'}. ${rainCard?.plain_sentence_en || ''} For crops such as ${crops}, keep soil covered to hold moisture and watch drainage during heavier rain.`;
+      }
+
+      if (params.language === 'fr') {
+        return `Observations NASA pour ${region.name} (${region.capital}) : précipitations ${rainCard?.value ?? 'N/D'} mm (${rainCard?.trend_text_fr || ''}), humidité/végétation ${vegCard?.value ?? 'N/D'}, et température de surface ${lstCard?.value ?? 'N/D'} °C.`;
+      }
+      return `NASA observations for ${region.name} (${region.capital}): rainfall ${rainCard?.value ?? 'N/A'} mm (${rainCard?.trend_text_en || ''}), vegetation moisture ${vegCard?.value ?? 'N/A'}, and surface temperature ${lstCard?.value ?? 'N/A'} °C.`;
+    };
+
+    if (!process.env.GEMINI_API_KEY) {
+      return { answer: buildDeterministicChatAnswer(), sources, chart };
+    }
+
     const ai = getGeminiClient();
     const profileObj = PROFILES.find((p) => p.id === params.profileId) ?? PROFILES[1];
+
+    const farmerRule =
+      params.profileId === 'farmer'
+        ? `5. VOICE RESPONSE FOR FARMER: Keep your answer to 2 to 4 short, warm, spoken-friendly sentences with practical farm advice suited to ${region.name} crops (${(params.language === 'fr' ? region.crops_fr : region.crops_en).join(', ')}). Avoid technical jargon, parentheses, or lists so it sounds natural when read aloud.`
+        : '';
 
     const systemInstruction = `You are AGBÉA Assistant for Togo climate intelligence.
 Language: Respond strictly in ${params.language === 'fr' ? 'French' : 'English'}.
@@ -1690,22 +1794,31 @@ RULES:
 2. If the user asks about an off-topic subject (e.g., sports, politics, cooking, coding), politely refuse and explain you only answer environmental and climate questions for Togo based on NASA data.
 3. Never invent numbers or claim unavailable forecasts.
 4. Keep formatting clean prose without markdown hashtags or emojis.
+${farmerRule}
 
 NASA OBSERVATIONS FOR ${region.name}:
 Summary (Sep 2025): ${JSON.stringify(summary?.indicators || [])}
 Monthly 2025: ${JSON.stringify(monthly2025)}`;
 
-    const aiResp = await ai.models.generateContent({
-      model: 'gemini-4-hydrogen',
-      contents: params.message,
-      config: { systemInstruction },
-    });
-
-    const answer =
-      aiResp.text?.trim() ||
-      (params.language === 'fr'
-        ? 'Les observations NASA ont été consultées pour votre région.'
-        : 'NASA observations have been checked for your region.');
+    let answer = '';
+    try {
+      const aiResp = await Promise.race([
+        ai.models.generateContent({
+          model: 'gemini-4-hydrogen',
+          contents: params.message,
+          config: {
+            systemInstruction,
+            thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+          },
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Gemini chat timeout')), 8000)
+        ),
+      ]);
+      answer = aiResp.text?.trim() || buildDeterministicChatAnswer();
+    } catch {
+      answer = buildDeterministicChatAnswer();
+    }
 
     return { answer, sources, chart };
   }

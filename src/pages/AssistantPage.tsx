@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { Info, Mic, Send } from 'lucide-react';
 import { useApp } from '../context/AppContext.tsx';
+import { FarmerVoiceAssistant } from '../components/FarmerVoiceAssistant.tsx';
 import {
   sendChatFallback,
   streamChat,
@@ -32,6 +33,16 @@ interface UiMessage {
 }
 
 export function AssistantPage() {
+  const { profile } = useApp();
+
+  if (profile === 'farmer') {
+    return <FarmerVoiceAssistant />;
+  }
+
+  return <StandardAssistantChat />;
+}
+
+function StandardAssistantChat() {
   const {
     language,
     mode,
