@@ -19,6 +19,8 @@ interface TogoLeafletMapProps {
   onSelectRegion?: (regionId: RegionId) => void;
   heightClassName?: string;
   interactive?: boolean;
+  /** Shown under each region value in the tooltip, e.g. « Moyenne régionale · septembre 2025 » */
+  valuesLabel?: string;
 }
 
 function getColorForRegion(indicator: IndicatorId, value: number | null | undefined): string {
@@ -49,6 +51,23 @@ function getColorForRegion(indicator: IndicatorId, value: number | null | undefi
   return '#E2E8F0';
 }
 
+/** Legend of the region colours (same thresholds as getColorForRegion), lowest class first. */
+export function regionLegend(indicator: IndicatorId): { color: string; label: string }[] {
+  const classes: Record<string, [string, string][]> = {
+    rainfall: [['#BAE6FD', '< 50 mm'], ['#38BDF8', '50–120 mm'], ['#0E7490', '120–220 mm'], ['#0C4A6E', '≥ 220 mm']],
+    greenness: [['#E2E8D5', '< 0,4'], ['#86BA90', '0,4–0,6'], ['#2E7D4B', '0,6–0,75'], ['#14532D', '≥ 0,75']],
+    lst: [['#FDBA74', '< 27 °C'], ['#EA580C', '27–30 °C'], ['#C2410C', '30–33 °C'], ['#7C2D12', '≥ 33 °C']],
+    elevation: [['#E2E8F0', '< 100 m'], ['#94A3B8', '100–250 m'], ['#475569', '250–350 m'], ['#0F2942', '≥ 350 m']],
+  };
+  return (classes[indicator] || classes.elevation).map(([color, label]) => ({ color, label }));
+}
+
+/** Rounded display value (rain and temperature: 1 decimal, NDVI: 3, elevation: whole metres). */
+function formatValue(indicator: IndicatorId, value: number): string {
+  const digits = indicator === 'greenness' ? 3 : indicator === 'elevation' ? 0 : 1;
+  return value.toFixed(digits);
+}
+
 export function TogoLeafletMap({
   geojson,
   selectedRegionId,
@@ -61,6 +80,7 @@ export function TogoLeafletMap({
   onSelectRegion,
   heightClassName = 'h-[500px]',
   interactive = true,
+  valuesLabel,
 }: TogoLeafletMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -151,7 +171,9 @@ export function TogoLeafletMap({
           color: isSelected ? '#0F2942' : '#475569',
           weight: isSelected ? 3 : 1.5,
           fillColor: getColorForRegion(indicator, val),
-          fillOpacity: tileUrlTemplate ? 0.25 : 0.62,
+          // Over a satellite image, regions are outlines only (values in the tooltip): mixing two
+          // colour scales on the same map was misleading. Without image: region colour map.
+          fillOpacity: tileUrlTemplate ? 0.04 : 0.7,
         };
       },
       onEachFeature: (feature, featureLayer) => {
@@ -169,7 +191,7 @@ export function TogoLeafletMap({
 
         featureLayer.bindTooltip(
           `<div style="font-family: Plus Jakarta Sans, sans-serif; font-size: 12px;">
-            <strong>${name}</strong>${val !== null && val !== undefined ? ` · <span style="font-family: JetBrains Mono, monospace;">${val} ${unit}</span>` : ''}
+            <strong>${name}</strong>${val !== null && val !== undefined ? ` · <span style="font-family: JetBrains Mono, monospace;">${formatValue(indicator, val)} ${unit}</span>` : ''}${valuesLabel ? `<br/><span style="color:#64748B">${valuesLabel}</span>` : ''}
           </div>`,
           { sticky: true }
         );
@@ -200,7 +222,7 @@ export function TogoLeafletMap({
 
     layer.addTo(map);
     geoLayerRef.current = layer;
-  }, [geojson, selectedRegionId, indicator, regionValues, tileUrlTemplate, onMapClickCoordinate, onSelectRegion]);
+  }, [geojson, selectedRegionId, indicator, regionValues, tileUrlTemplate, onMapClickCoordinate, onSelectRegion, valuesLabel]);
 
   return (
     <div

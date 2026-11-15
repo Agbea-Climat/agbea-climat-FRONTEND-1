@@ -34,7 +34,25 @@ import type {
   RegionSummaryResponse,
   TimeseriesResponse,
 } from '../types/apiContract.ts';
-import { TogoLeafletMap } from '../components/TogoLeafletMap.tsx';
+import { TogoLeafletMap, regionLegend } from '../components/TogoLeafletMap.tsx';
+
+/** « septembre 2025 » / « September 2025 » from YYYY-MM */
+function monthText(ym: string | null | undefined, lang: string): string {
+  if (!ym) return '';
+  const d = new Date(`${ym.slice(0, 7)}-01T00:00:00`);
+  return Number.isNaN(d.getTime())
+    ? ym
+    : d.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', { month: 'long', year: 'numeric' });
+}
+
+/** « 16 août 2026 » from YYYY-MM-DD */
+function dayText(date: string | null | undefined, lang: string): string {
+  if (!date) return '';
+  const d = new Date(`${date}T00:00:00`);
+  return Number.isNaN(d.getTime())
+    ? date
+    : d.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
 import { EmptyDataPanel, ErrorPanel, LoadingPanel } from '../components/StatusStates.tsx';
 
 export function MapPage() {
@@ -52,8 +70,13 @@ export function MapPage() {
 
   const [activeRegionId, setActiveRegionId] = useState<RegionId>(paramRegion || regionId);
   const [indicator, setIndicator] = useState<IndicatorId>('greenness');
-  const [layerDate, setLayerDate] = useState<string>('2025-09-15');
+  // '' = most recent image of the layer (backend default_date); otherwise the requested day,
+  // snapped to the closest available image (the date shown is always the real image date)
+  const [layerDate, setLayerDate] = useState<string>('');
   const [opacity, setOpacity] = useState<number>(0.65);
+  // 'image': NASA satellite image (regions as outlines, values on hover)
+  // 'regions': AGBÉA monthly value per region as a colour map (no image)
+  const [mapView, setMapView] = useState<'image' | 'regions'>('image');
 
   const [geojson, setGeojson] = useState<RegionsGeoJsonResponse | null>(null);
   const [indicatorsList, setIndicatorsList] = useState<IndicatorInfo[]>([]);
@@ -186,6 +209,18 @@ export function MapPage() {
     return language === 'fr' ? 'Projeté' : 'Predicted';
   };
 
+  // Map display: satellite image vs AGBÉA monthly region values (never mixed on the same view)
+  const hasImage = Boolean(layerData?.tile_url_template);
+  const showImage = hasImage && mapView === 'image';
+  const availableDates = layerData?.available_dates || [];
+  const valuesLabel = layerData?.region_values_month
+    ? `${language === 'fr' ? 'Moyenne régionale' : 'Regional mean'} · ${monthText(layerData.region_values_month, language)}`
+    : indicator === 'elevation'
+    ? language === 'fr'
+      ? 'Altitude moyenne par région (NASADEM)'
+      : 'Mean elevation per region (NASADEM)'
+    : undefined;
+
   const natureStyle = (nature: ExplainSentence['nature']) => {
     if (nature === 'observed') return 'bg-[#E0F2FE] text-[#0369A1] border-[#BAE6FD]';
     if (nature === 'interpreted') return 'bg-[#DCFCE7] text-[#166534] border-[#BBF7D0]';
@@ -228,7 +263,10 @@ export function MapPage() {
                 type="button"
                 role="tab"
                 aria-selected={active}
-                onClick={() => setIndicator(ind.id)}
+                onClick={() => {
+                  setIndicator(ind.id);
+                  setLayerDate(''); // each layer opens on its most recent image
+                }}
                 title={tip}
                 className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded border transition-colors cursor-pointer ${
                   active
@@ -301,17 +339,51 @@ export function MapPage() {
                 selectedRegionId={activeRegionId}
                 indicator={indicator}
                 regionValues={layerData?.region_values || {}}
-                tileUrlTemplate={layerData?.tile_url_template}
+                tileUrlTemplate={showImage ? layerData?.tile_url_template : undefined}
                 maxNativeZoom={layerData?.max_native_zoom}
                 overlayOpacity={opacity}
                 onMapClickCoordinate={handleMapClickCoordinate}
                 heightClassName="h-[460px] sm:h-[520px]"
+                valuesLabel={valuesLabel}
               />
-              {mapLoading && (
-                <div className="mt-2 text-xs text-[#475569]">
-                  {language === 'fr' ? 'Chargement de la couche...' : 'Loading layer...'}
+              <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                <div className="text-xs text-[#475569]">
+                  {mapLoading
+                    ? language === 'fr'
+                      ? 'Chargement de la couche...'
+                      : 'Loading layer...'
+                    : showImage
+                    ? `${language === 'fr' ? 'Image satellite NASA du' : 'NASA satellite image of'} ${dayText(layerData?.date, language)}${
+                        valuesLabel
+                          ? ` · ${language === 'fr' ? 'survolez une région pour sa valeur' : 'hover a region for its value'} (${monthText(layerData?.region_values_month, language)})`
+                          : ''
+                      }`
+                    : valuesLabel}
                 </div>
-              )}
+                {hasImage && (
+                  <div className="inline-flex rounded border border-[#CBD5E1] overflow-hidden text-xs" role="group">
+                    {(['image', 'regions'] as const).map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => setMapView(v)}
+                        aria-pressed={mapView === v}
+                        className={`px-3 py-1.5 font-semibold cursor-pointer ${
+                          mapView === v ? 'bg-[#0F2942] text-white' : 'bg-white text-[#334155]'
+                        }`}
+                      >
+                        {v === 'image'
+                          ? language === 'fr'
+                            ? 'Image satellite'
+                            : 'Satellite image'
+                          : language === 'fr'
+                          ? 'Valeur par région'
+                          : 'Value per region'}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -347,15 +419,23 @@ export function MapPage() {
                     htmlFor="layer-date"
                     className="block text-[11px] font-semibold text-[#475569] mb-1"
                   >
-                    {language === 'fr' ? 'Date' : 'Date'}
+                    {language === 'fr' ? "Date de l'image" : 'Image date'}
                   </label>
                   <input
                     id="layer-date"
                     type="date"
-                    min="2020-01-01"
-                    max="2025-12-31"
-                    value={layerDate}
+                    min={availableDates[0]}
+                    max={availableDates[availableDates.length - 1]}
+                    disabled={!availableDates.length}
+                    value={layerData?.date || layerDate}
                     onChange={(e) => setLayerDate(e.target.value)}
+                    title={
+                      availableDates.length
+                        ? `${language === 'fr' ? 'Images disponibles du' : 'Images available from'} ${availableDates[0]} ${
+                            language === 'fr' ? 'au' : 'to'
+                          } ${availableDates[availableDates.length - 1]}`
+                        : undefined
+                    }
                     className="h-9 px-2.5 text-xs font-mono bg-white border border-[#CBD5E1] rounded text-[#0F2942]"
                   />
                 </div>
@@ -381,7 +461,21 @@ export function MapPage() {
               </div>
             </div>
 
-            {layerData && (
+            {layerData && !showImage && (
+              <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-[#DCE3E1]">
+                {regionLegend(indicator).map((s) => (
+                  <div key={s.color} className="flex items-center gap-1.5 text-xs text-[#334155]">
+                    <span
+                      className="w-3.5 h-3.5 rounded-sm border border-[#94A3B8]"
+                      style={{ backgroundColor: s.color }}
+                      aria-hidden="true"
+                    />
+                    <span className="font-mono text-[11px]">{s.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {layerData && showImage && (
               <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-[#DCE3E1]">
                 {layerData.stops.map((s) => (
                   <div key={s.color} className="flex items-center gap-1.5 text-xs text-[#334155]">

@@ -118,6 +118,18 @@ async function getBackendSession(sessionId: string): Promise<SessionResponse> {
 /** Cached M13 layer lists per mode (static catalog with available dates). */
 const layersCache = new Map<ExperienceMode, Promise<BackendLayer[]>>();
 
+/** Cached raw M02 /meta (last month with data per indicator). */
+let backendMetaPromise: Promise<BackendMeta> | null = null;
+function getBackendMeta(): Promise<BackendMeta> {
+  if (!backendMetaPromise) {
+    backendMetaPromise = requestJson<BackendMeta>('/meta');
+    backendMetaPromise.catch(() => {
+      backendMetaPromise = null;
+    });
+  }
+  return backendMetaPromise;
+}
+
 /** M01 GET /health */
 export async function getHealth(forceRefresh = false): Promise<HealthResponse> {
   if (forceRefresh) resetBackendProbe();
@@ -288,19 +300,32 @@ export async function getLayer(params: {
       layersPromise.catch(() => layersCache.delete(params.mode));
     }
     const layers = await layersPromise;
-    // Region choropleth values come from M19 /dashboard?date=YYYY-MM (best effort).
+    // Region values come from M19 /dashboard?date=YYYY-MM for the month of the image actually shown.
+    // Monthly series stop earlier than the tiles (rain: IMERG Final, LST: 2022-12), so the month is
+    // capped to the indicator's last month with data (/meta) and returned for display.
+    const backendId = toBackendIndicator(params.indicator);
+    const tileLayer = layers.find((l) => l.indicator === backendId);
+    const imageDate = tileLayer
+      ? pickClosestDate(tileLayer.available_dates, params.date) || tileLayer.default_date
+      : params.date;
     let regionValues = {} as MapLayerResponse['region_values'];
+    let valuesMonth: string | null = null;
     if (params.indicator !== 'elevation') {
       try {
-        const dash = await requestJson<BackendDashboard>('/dashboard', {
-          query: { date: params.date ? params.date.slice(0, 7) : undefined },
-        });
+        let month = imageDate ? imageDate.slice(0, 7) : undefined;
+        const last = (await getBackendMeta()).data_last_updated_by_indicator?.[backendId];
+        if (last && (!month || month > last)) month = last;
+        const dash = await requestJson<BackendDashboard>('/dashboard', { query: { date: month } });
         regionValues = regionValuesFromDashboard(dash, params.indicator);
+        valuesMonth = dash.date || month || null;
       } catch {
         // Month not available: tiles still render without region values
       }
     }
-    return adaptLayer(layers, params.indicator, params.mode, params.date, regionValues);
+    return {
+      ...adaptLayer(layers, params.indicator, params.mode, params.date, regionValues),
+      region_values_month: valuesMonth,
+    };
   }
   return requestJson<MapLayerResponse>('/layers', {
     query: {

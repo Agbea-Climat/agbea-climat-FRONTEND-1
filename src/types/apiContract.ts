@@ -171,6 +171,10 @@ export interface MapLayerResponse {
   legend_max_label_fr: string;
   stops: LayerLegendStop[];
   region_values: Record<RegionId, number | null>;
+  /** Dates with a satellite image for this layer (backend GET /layers), oldest first */
+  available_dates?: string[];
+  /** Month (YYYY-MM) of the region values: the image month, or the indicator's last month with data */
+  region_values_month?: string | null;
 }
 
 /** M14 GET /regions/{id}/summary */
@@ -277,6 +281,9 @@ export interface DashboardRegionCard {
     value: number | null;
     unit: string;
     trend: TrendDirection;
+    /** Month of the value, e.g. « septembre 2025 » (series end at different months) */
+    period_label_fr?: string;
+    period_label_en?: string;
   }[];
 }
 
@@ -375,6 +382,8 @@ export interface BackendMeta {
   version: string;
   regions_count: number;
   data_last_updated: string; // YYYY-MM-DD
+  /** Last month with data per indicator, e.g. {"precipitation": "2025-09", "lst_day": "2022-12"} */
+  data_last_updated_by_indicator?: Partial<Record<string, string>> | null;
   features: { id: string; title: string; status: string }[];
 }
 

@@ -10,7 +10,7 @@ import type {
   RegionsGeoJsonResponse,
   TrendDirection,
 } from '../types/apiContract.ts';
-import { TogoLeafletMap } from '../components/TogoLeafletMap.tsx';
+import { TogoLeafletMap, regionLegend } from '../components/TogoLeafletMap.tsx';
 import { EmptyDataPanel, ErrorPanel, LoadingPanel } from '../components/StatusStates.tsx';
 import heroOrbitImg from '../assets/images/hero_togo_orbit_1794656420448.jpg';
 
@@ -87,6 +87,14 @@ export function HomePage() {
       mapRegionValues[card.region.id] = card.metrics[0]?.value ?? null;
     }
   }
+  // The region colours show the first indicator of the dashboard: say which one and for which month
+  const mapLead = dashboard?.regions[0]?.metrics[0];
+  const mapPeriod = mapLead ? (language === 'fr' ? mapLead.period_label_fr : mapLead.period_label_en) : '';
+  const mapCaption = mapLead
+    ? `${language === 'fr' ? 'Couleur des régions' : 'Region colours'} : ${
+        language === 'fr' ? mapLead.label_fr : mapLead.label_en
+      }${mapPeriod ? ` (${mapPeriod})` : ''}`
+    : undefined;
 
   return (
     <div>
@@ -283,7 +291,26 @@ export function HomePage() {
                   regionValues={mapRegionValues}
                   onSelectRegion={(rid) => navigate(`/carte?region=${rid}`)}
                   heightClassName="h-[420px]"
+                  valuesLabel={mapCaption}
                 />
+                {/* What the region colours show, and for which month */}
+                {mapLead && (
+                  <div className="space-y-1.5">
+                    <p className="text-xs text-[#475569]">{mapCaption}</p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      {regionLegend(mapLead.indicator_id).map((s) => (
+                        <span key={s.color} className="flex items-center gap-1.5 text-[11px] text-[#334155]">
+                          <span
+                            className="w-3 h-3 rounded-sm border border-[#94A3B8]"
+                            style={{ backgroundColor: s.color }}
+                            aria-hidden="true"
+                          />
+                          <span className="font-mono">{s.label}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* 3 Highlights citing sources */}
                 <div className="bg-[#F7F9F8] border border-[#DCE3E1] rounded p-4 space-y-3">

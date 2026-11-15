@@ -311,6 +311,7 @@ export function adaptLayer(
     legend_max_label_en: last,
     stops,
     region_values: regionValues,
+    available_dates: layer.available_dates,
   };
 }
 
@@ -483,6 +484,8 @@ export function adaptDashboard(raw: BackendDashboard, profile: ProfileId | null)
           value: c.value,
           unit: c.unit,
           trend: c.trend,
+          period_label_fr: c.period_label_fr,
+          period_label_en: c.period_label_en,
         })),
       };
     }),
