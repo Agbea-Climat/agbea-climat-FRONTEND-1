@@ -1,0 +1,1768 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-11-14T15:33:39.471758+00:00",
+  "__export_source": "agbea-climat.backend",
+  "resources": [
+    {
+      "_id": "wrk_agbea_climat",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "AGBÉA CLIMAT API",
+      "description": "# AGBÉA CLIMAT — tests de l'API (contrat v0.4)\n\n1. Choisir l'environnement **Local** (ou **Distant**, après avoir renseigné `base_url`) — Ctrl+E pour les variables.\n2. Lancer les requêtes dans l'ordre, bloc par bloc. Chaque requête indique dans sa description (onglet *Docs*) la **mission** et le **résultat attendu**.\n3. Sessions : après « M03 · Créer une session », copier `response.session_id` dans l'environnement. Même chose pour `response.thread_id` après « M26 · Chat — nouveau fil ».\n\n**Format de toutes les réponses JSON** :\n- succès : `{\"status\": \"success\", \"message\": \"OK\", \"response\": <données>}`\n- erreur : `{\"status\": \"error\", \"message\": \"<texte lisible>\", \"response\": {\"code\": \"...\", \"details\": ...}}`\n\nDans les descriptions, les champs à vérifier sont **dans `response`** ; « code `xxx` » = `response.code`.\nSans enveloppe : flux `/chat/stream` (SSE) et fichiers `/timeseries/export`.\nUne mission est validée quand toutes ses requêtes donnent le résultat attendu.\n\nNotes :\n- Tant que les vraies données (P2) ne sont pas chargées, les valeurs des blocs 4 et 5 sont **aléatoires** : ne vérifier que la forme des réponses.\n- Le bloc 6 renvoie des réponses factices tant que P3 (corpus) et la clé LLM ne sont pas en place.\n",
+      "scope": "collection",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "env_agbea_base",
+      "_type": "environment",
+      "parentId": "wrk_agbea_climat",
+      "name": "Base Environment",
+      "data": {
+        "session_id": "COLLER_ICI_le_session_id",
+        "thread_id": "COLLER_ICI_le_thread_id"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "session_id",
+          "thread_id"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 0,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "env_agbea_0",
+      "_type": "environment",
+      "parentId": "env_agbea_base",
+      "name": "Local",
+      "data": {
+        "base_url": "http://localhost:8000/api/v1"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url"
+        ]
+      },
+      "color": "#2e7d32",
+      "isPrivate": false,
+      "metaSortKey": 0,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "env_agbea_1",
+      "_type": "environment",
+      "parentId": "env_agbea_base",
+      "name": "Distant (à compléter)",
+      "data": {
+        "base_url": "https://agbea.api.pepit.cloud/api/v1"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url"
+        ]
+      },
+      "color": "#1565c0",
+      "isPrivate": false,
+      "metaSortKey": 1,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "fld_agbea_1",
+      "_type": "request_group",
+      "parentId": "wrk_agbea_climat",
+      "name": "Bloc 1 — Socle, profils et sessions",
+      "description": "Santé de l'API, méta, profils d'utilisateurs, sessions anonymes.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1000,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_001",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M01 · Santé de l'API",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M01** — `GET /api/v1/health`\n\n**Attendu** : **200** — corps exact `{\"status\": \"success\", \"message\": \"OK\", \"response\": {\"status\": \"ok\"}}`.",
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_002",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M02 · Méta de l'application",
+      "method": "GET",
+      "url": "{{ _.base_url }}/meta",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M02** — `GET /api/v1/meta`\n\n**Attendu** : **200** — `regions_count = 5` ; `data_last_updated` au format `YYYY-MM-DD` ; dans `features` : `voice` = `in_development`, `ewe` = `planned`, `map` et `chat` = `prototype`.",
+      "metaSortKey": -999,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_003",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M27 · Profils d'utilisateurs",
+      "method": "GET",
+      "url": "{{ _.base_url }}/profiles",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M27** — `GET /api/v1/profiles`\n\n**Attendu** : **200** — 4 profils : `farmer`, `community`, `researcher`, `decision_maker`. `farmer` : `landing_screen = agriculture`, `default_mode = public`. `researcher` : `default_mode = scientific`.",
+      "metaSortKey": -998,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_004",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M03 · Créer une session",
+      "method": "POST",
+      "url": "{{ _.base_url }}/sessions",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M03** — `POST /api/v1/sessions`\n\n**Attendu** : **201** — `message = Session créée` ; `session_id` au format UUID, `threads = []`. Deux appels donnent deux `session_id` différents.\n\n👉 **Copie le `session_id` dans la variable `session_id` de l'environnement** (Ctrl+E) pour les requêtes suivantes.",
+      "metaSortKey": -997,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_005",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M04 · Lire la session",
+      "method": "GET",
+      "url": "{{ _.base_url }}/sessions/{{ _.session_id }}",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M04** — `GET /api/v1/sessions/{session_id}`\n\n**Attendu** : **200** — même `session_id` ; `last_seen_at` mis à jour ; `threads` triés du plus récent au plus ancien.\n\nUtilise `{{ _.session_id }}` : colle d'abord le `session_id` renvoyé par « M03 · Créer une session » dans l'environnement (Ctrl+E).",
+      "metaSortKey": -996,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_006",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M04 · Session inconnue (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/sessions/00000000-0000-0000-0000-000000000000",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M04** — `GET /api/v1/sessions/00000000-0000-0000-0000-000000000000`\n\n**Attendu** : **404** — `{\"status\": \"error\", \"message\": \"Session introuvable : ...\", \"response\": {\"code\": \"session_not_found\", ...}}`.",
+      "metaSortKey": -995,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_007",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M05 · Préférences : profil + région",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/sessions/{{ _.session_id }}/preferences",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"profile\": \"farmer\",\n  \"region_id\": \"savanes\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M05** — `PATCH /api/v1/sessions/{session_id}/preferences`\n\n**Attendu** : **200** — renvoie `profile = farmer`, `region_id = savanes`.\n\nUtilise `{{ _.session_id }}` : colle d'abord le `session_id` renvoyé par « M03 · Créer une session » dans l'environnement (Ctrl+E).",
+      "metaSortKey": -994,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_008",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M05 · Préférences : mode seul (mise à jour partielle)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/sessions/{{ _.session_id }}/preferences",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"mode\": \"scientific\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M05** — `PATCH /api/v1/sessions/{session_id}/preferences`\n\n**Attendu** : **200** — `mode = scientific` **et** `profile` / `region_id` de la requête précédente conservés. Vérifier ensuite avec « M04 · Lire la session ».",
+      "metaSortKey": -993,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_009",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M05 · Préférences : profil invalide (erreur)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/sessions/{{ _.session_id }}/preferences",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"profile\": \"pilote\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M05** — `PATCH /api/v1/sessions/{session_id}/preferences`\n\n**Attendu** : **422** — code `validation_error`.",
+      "metaSortKey": -992,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_010",
+      "_type": "request",
+      "parentId": "fld_agbea_1",
+      "name": "M05 · Préférences : région inconnue (erreur)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/sessions/{{ _.session_id }}/preferences",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"region_id\": \"abidjan\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M05** — `PATCH /api/v1/sessions/{session_id}/preferences`\n\n**Attendu** : **404** — code `region_not_found`.",
+      "metaSortKey": -991,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "fld_agbea_2",
+      "_type": "request_group",
+      "parentId": "wrk_agbea_climat",
+      "name": "Bloc 2 — Géographie",
+      "description": "Régions du Togo, contours GeoJSON, localisation d'un point. Coordonnées toujours en `[lon, lat]`.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -999,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_011",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M06 · Liste des régions",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M06** — `GET /api/v1/regions`\n\n**Attendu** : **200** — 5 régions du sud au nord : maritime, plateaux, centrale, kara, savanes. `centroid` en `[lon, lat]` dans le Togo (lon ≈ 0 à 1,8 ; lat ≈ 6 à 11) ; `capital` rempli.",
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_012",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M07 · Contours GeoJSON",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/geojson",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M07** — `GET /api/v1/regions/geojson`\n\n**Attendu** : **200** — `FeatureCollection` de 5 features ; `properties.id` = id de région ; géométrie `Polygon` ou `MultiPolygon`. Après P2 : vrais contours (pas des rectangles). Astuce : coller la réponse dans https://geojson.io.",
+      "metaSortKey": -999,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_013",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M08 · Détail d'une région",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/kara",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M08** — `GET /api/v1/regions/kara`\n\n**Attendu** : **200** — `id = kara`, `capital = Kara`.",
+      "metaSortKey": -998,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_014",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M08 · Région inconnue (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/abidjan",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M08** — `GET /api/v1/regions/abidjan`\n\n**Attendu** : **404** — code `region_not_found`.",
+      "metaSortKey": -997,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_015",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M09 · Localiser Lomé",
+      "method": "GET",
+      "url": "{{ _.base_url }}/locate",
+      "parameters": [
+        {
+          "name": "lon",
+          "value": "1.2228",
+          "disabled": false
+        },
+        {
+          "name": "lat",
+          "value": "6.1319",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M09** — `GET /api/v1/locate`\n\n**Attendu** : **200** — région `maritime`.",
+      "metaSortKey": -996,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_016",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M09 · Localiser Atakpamé",
+      "method": "GET",
+      "url": "{{ _.base_url }}/locate",
+      "parameters": [
+        {
+          "name": "lon",
+          "value": "1.1261",
+          "disabled": false
+        },
+        {
+          "name": "lat",
+          "value": "7.5333",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M09** — `GET /api/v1/locate`\n\n**Attendu** : **200** — région `plateaux`.",
+      "metaSortKey": -995,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_017",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M09 · Localiser Sokodé",
+      "method": "GET",
+      "url": "{{ _.base_url }}/locate",
+      "parameters": [
+        {
+          "name": "lon",
+          "value": "1.1333",
+          "disabled": false
+        },
+        {
+          "name": "lat",
+          "value": "8.9833",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M09** — `GET /api/v1/locate`\n\n**Attendu** : **200** — région `centrale`.",
+      "metaSortKey": -994,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_018",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M09 · Localiser Kara",
+      "method": "GET",
+      "url": "{{ _.base_url }}/locate",
+      "parameters": [
+        {
+          "name": "lon",
+          "value": "1.1861",
+          "disabled": false
+        },
+        {
+          "name": "lat",
+          "value": "9.5511",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M09** — `GET /api/v1/locate`\n\n**Attendu** : **200** — région `kara`.",
+      "metaSortKey": -993,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_019",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M09 · Localiser Dapaong",
+      "method": "GET",
+      "url": "{{ _.base_url }}/locate",
+      "parameters": [
+        {
+          "name": "lon",
+          "value": "0.2075",
+          "disabled": false
+        },
+        {
+          "name": "lat",
+          "value": "10.8622",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M09** — `GET /api/v1/locate`\n\n**Attendu** : **200** — région `savanes`.",
+      "metaSortKey": -992,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_020",
+      "_type": "request",
+      "parentId": "fld_agbea_2",
+      "name": "M09 · Localiser Accra — hors Togo (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/locate",
+      "parameters": [
+        {
+          "name": "lon",
+          "value": "-0.187",
+          "disabled": false
+        },
+        {
+          "name": "lat",
+          "value": "5.6037",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M09** — `GET /api/v1/locate`\n\n**Attendu** : **404** — code `outside_togo`.",
+      "metaSortKey": -991,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "fld_agbea_3",
+      "_type": "request_group",
+      "parentId": "wrk_agbea_climat",
+      "name": "Bloc 3 — Catalogue et sources",
+      "description": "Indicateurs, fiches des datasets NASA, couches de carte (tuiles GIBS).",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -998,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_021",
+      "_type": "request",
+      "parentId": "fld_agbea_3",
+      "name": "M10 · Indicateurs",
+      "method": "GET",
+      "url": "{{ _.base_url }}/indicators",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M10** — `GET /api/v1/indicators`\n\n**Attendu** : **200** — 4 indicateurs : precipitation, ndvi, lst_day, elevation. `elevation.has_timeseries = false`, les 3 autres `true`. Chaque `dataset_id` existe dans `/datasets` ; chaque `layer_id` existe dans `/layers`.",
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_022",
+      "_type": "request",
+      "parentId": "fld_agbea_3",
+      "name": "M11 · Datasets",
+      "method": "GET",
+      "url": "{{ _.base_url }}/datasets",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M11** — `GET /api/v1/datasets`\n\n**Attendu** : **200** — 4 fiches. Tous les champs remplis, `limitations` non vide, `source_url` en `https://`.",
+      "metaSortKey": -999,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_023",
+      "_type": "request",
+      "parentId": "fld_agbea_3",
+      "name": "M12 · Détail d'un dataset",
+      "method": "GET",
+      "url": "{{ _.base_url }}/datasets/gpm_imerg",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M12** — `GET /api/v1/datasets/gpm_imerg`\n\n**Attendu** : **200** — `indicator = precipitation`.",
+      "metaSortKey": -998,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_024",
+      "_type": "request",
+      "parentId": "fld_agbea_3",
+      "name": "M12 · Dataset inconnu (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/datasets/inconnu",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M12** — `GET /api/v1/datasets/inconnu`\n\n**Attendu** : **404** — code `dataset_not_found`.",
+      "metaSortKey": -997,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_025",
+      "_type": "request",
+      "parentId": "fld_agbea_3",
+      "name": "M13 · Couches de carte — mode public",
+      "method": "GET",
+      "url": "{{ _.base_url }}/layers",
+      "parameters": [
+        {
+          "name": "mode",
+          "value": "public",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M13** — `GET /api/v1/layers`\n\n**Attendu** : **200** — au moins 1 couche. `url_template` en `https://` contenant `{z}`, `{x}`, `{y}` et `{date}` ; `legend` ≥ 2 paliers ; `default_date` présente dans `available_dates`.",
+      "metaSortKey": -996,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_026",
+      "_type": "request",
+      "parentId": "fld_agbea_3",
+      "name": "M13 · Couches de carte — mode scientifique",
+      "method": "GET",
+      "url": "{{ _.base_url }}/layers",
+      "parameters": [
+        {
+          "name": "mode",
+          "value": "scientific",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M13** — `GET /api/v1/layers`\n\n**Attendu** : **200** — mêmes règles ; peut contenir plus de couches que le mode public.",
+      "metaSortKey": -995,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "fld_agbea_4",
+      "_type": "request_group",
+      "parentId": "wrk_agbea_climat",
+      "name": "Bloc 4 — Observations et historique",
+      "description": "Résumés, séries, comparaisons, export, avant/après. Valeurs réelles seulement après P2 (avant : valeurs mock aléatoires).",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -997,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_027",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M14 · Résumé régional (Kara, août 2024)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/kara/summary",
+      "parameters": [
+        {
+          "name": "date",
+          "value": "2024-08",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M14** — `GET /api/v1/regions/kara/summary`\n\n**Attendu** : **200** — 3 indicateurs (precipitation, ndvi, lst_day), chacun avec `plain_summary` et `dataset_id`. Après P2 : **deux appels identiques → même réponse** ; tendance cohérente avec `anomaly_pct` (±10 %, ou ±1,5 °C pour la température).",
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_028",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M14 · Résumé régional — dernier mois disponible",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/savanes/summary",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M14** — `GET /api/v1/regions/savanes/summary`\n\n**Attendu** : **200** — sans `date` : dernier mois disponible dans les données.",
+      "metaSortKey": -999,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_029",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M14 · Résumé — région inconnue (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/abidjan/summary",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M14** — `GET /api/v1/regions/abidjan/summary`\n\n**Attendu** : **404** — code `region_not_found`.",
+      "metaSortKey": -998,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_030",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M15 · Série mensuelle de pluie (Savanes 2023–2024)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/savanes/timeseries",
+      "parameters": [
+        {
+          "name": "indicator",
+          "value": "precipitation",
+          "disabled": false
+        },
+        {
+          "name": "start",
+          "value": "2023-01",
+          "disabled": false
+        },
+        {
+          "name": "end",
+          "value": "2024-12",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M15** — `GET /api/v1/regions/savanes/timeseries`\n\n**Attendu** : **200** — 24 points contigus de `2023-01` à `2024-12` ; `units = mm` ; `dataset_id = gpm_imerg`. Après P2 : août plus pluvieux que janvier ; un mois sans donnée → `value: null`.",
+      "metaSortKey": -997,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_031",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M15 · Série annuelle de NDVI (Kara)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/kara/timeseries",
+      "parameters": [
+        {
+          "name": "indicator",
+          "value": "ndvi",
+          "disabled": false
+        },
+        {
+          "name": "start",
+          "value": "2015-01",
+          "disabled": false
+        },
+        {
+          "name": "end",
+          "value": "2024-12",
+          "disabled": false
+        },
+        {
+          "name": "granularity",
+          "value": "year",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M15** — `GET /api/v1/regions/kara/timeseries`\n\n**Attendu** : **200** — `granularity = year` : un point par année (moyenne pour NDVI et température, cumul pour la pluie).",
+      "metaSortKey": -996,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_032",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M15 · Série d'altitude (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/kara/timeseries",
+      "parameters": [
+        {
+          "name": "indicator",
+          "value": "elevation",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M15** — `GET /api/v1/regions/kara/timeseries`\n\n**Attendu** : **400** — code `no_timeseries`.",
+      "metaSortKey": -995,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_033",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M15 · Série — début après fin (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/kara/timeseries",
+      "parameters": [
+        {
+          "name": "indicator",
+          "value": "ndvi",
+          "disabled": false
+        },
+        {
+          "name": "start",
+          "value": "2024-06",
+          "disabled": false
+        },
+        {
+          "name": "end",
+          "value": "2024-01",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M15** — `GET /api/v1/regions/kara/timeseries`\n\n**Attendu** : **400** — code `invalid_period`.",
+      "metaSortKey": -994,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_034",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M16 · Comparer deux périodes (pluie, Savanes)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/savanes/compare",
+      "parameters": [
+        {
+          "name": "indicator",
+          "value": "precipitation",
+          "disabled": false
+        },
+        {
+          "name": "a_start",
+          "value": "2001",
+          "disabled": false
+        },
+        {
+          "name": "a_end",
+          "value": "2010",
+          "disabled": false
+        },
+        {
+          "name": "b_start",
+          "value": "2015",
+          "disabled": false
+        },
+        {
+          "name": "b_end",
+          "value": "2024",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M16** — `GET /api/v1/regions/savanes/compare`\n\n**Attendu** : **200** — `period_a.label = 2001–2010` ; `delta_abs = period_b.mean − period_a.mean` ; `delta_pct = delta_abs / period_a.mean × 100`. Après P2 : deux appels identiques → même réponse.",
+      "metaSortKey": -993,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_035",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M16 · Comparer — période invalide (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/kara/compare",
+      "parameters": [
+        {
+          "name": "indicator",
+          "value": "ndvi",
+          "disabled": false
+        },
+        {
+          "name": "a_start",
+          "value": "2010",
+          "disabled": false
+        },
+        {
+          "name": "a_end",
+          "value": "2001",
+          "disabled": false
+        },
+        {
+          "name": "b_start",
+          "value": "2015",
+          "disabled": false
+        },
+        {
+          "name": "b_end",
+          "value": "2024",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M16** — `GET /api/v1/regions/kara/compare`\n\n**Attendu** : **400** — code `invalid_period`.",
+      "metaSortKey": -992,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_036",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M17 · Export CSV",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/kara/timeseries/export",
+      "parameters": [
+        {
+          "name": "indicator",
+          "value": "ndvi",
+          "disabled": false
+        },
+        {
+          "name": "start",
+          "value": "2024-01",
+          "disabled": false
+        },
+        {
+          "name": "end",
+          "value": "2024-03",
+          "disabled": false
+        },
+        {
+          "name": "format",
+          "value": "csv",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M17** — `GET /api/v1/regions/kara/timeseries/export`\n\n**Attendu** : **200** — fichier, **pas d'enveloppe**. Header `Content-Disposition: attachment; filename=\"agbea_kara_ndvi_2024-01_2024-03.csv\"`. Lignes : `# source: ...`, `# units: ...`, `date,value,baseline,anomaly_pct`, puis 2024-01, 2024-02, 2024-03.",
+      "metaSortKey": -991,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_037",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M17 · Export JSON",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/kara/timeseries/export",
+      "parameters": [
+        {
+          "name": "indicator",
+          "value": "ndvi",
+          "disabled": false
+        },
+        {
+          "name": "start",
+          "value": "2024-01",
+          "disabled": false
+        },
+        {
+          "name": "end",
+          "value": "2024-02",
+          "disabled": false
+        },
+        {
+          "name": "format",
+          "value": "json",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M17** — `GET /api/v1/regions/kara/timeseries/export`\n\n**Attendu** : **200** — fichier, **pas d'enveloppe** : JSON brut d'une série (`indicator = ndvi`), téléchargé en pièce jointe `.json`.",
+      "metaSortKey": -990,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_038",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M18 · Avant / après NDVI (Kara)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/layers/ndvi/before-after",
+      "parameters": [
+        {
+          "name": "before",
+          "value": "2016-09-14",
+          "disabled": false
+        },
+        {
+          "name": "after",
+          "value": "2024-09-13",
+          "disabled": false
+        },
+        {
+          "name": "region_id",
+          "value": "kara",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M18** — `GET /api/v1/layers/ndvi/before-after`\n\n**Attendu** : **200** — deux `url_template` différents, `{date}` remplacé (aucun `{date}` restant) ; `before.url_template` contient `2016-09-14` ; `comparison.region_id = kara`.",
+      "metaSortKey": -989,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_039",
+      "_type": "request",
+      "parentId": "fld_agbea_4",
+      "name": "M18 · Avant / après — couche inconnue (erreur)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/layers/inconnue/before-after",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M18** — `GET /api/v1/layers/inconnue/before-after`\n\n**Attendu** : **404** — code `layer_not_found`.",
+      "metaSortKey": -988,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "fld_agbea_5",
+      "_type": "request_group",
+      "parentId": "wrk_agbea_climat",
+      "name": "Bloc 5 — Vues métier",
+      "description": "Tableau de bord, conseils agricoles, voix.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -996,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_040",
+      "_type": "request",
+      "parentId": "fld_agbea_5",
+      "name": "M19 · Tableau de bord (août 2024)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/dashboard",
+      "parameters": [
+        {
+          "name": "date",
+          "value": "2024-08",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M19** — `GET /api/v1/dashboard`\n\n**Attendu** : **200** — un résumé pour chacune des 5 régions ; 1 à 3 `highlights`, chacun `nature = observed` avec des `source_ids`.",
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_041",
+      "_type": "request",
+      "parentId": "fld_agbea_5",
+      "name": "M20 · Agriculture — Savanes, août 2024",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/savanes/agriculture",
+      "parameters": [
+        {
+          "name": "date",
+          "value": "2024-08",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M20** — `GET /api/v1/regions/savanes/agriculture`\n\n**Attendu** : **200** — `season = rainy`. `statements` : au moins 1 `observed` avec source, **aucun** `predicted`. `disclaimer` contient « prévisions officielles ».",
+      "metaSortKey": -999,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_042",
+      "_type": "request",
+      "parentId": "fld_agbea_5",
+      "name": "M20 · Agriculture — Savanes, janvier 2024",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/savanes/agriculture",
+      "parameters": [
+        {
+          "name": "date",
+          "value": "2024-01",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M20** — `GET /api/v1/regions/savanes/agriculture`\n\n**Attendu** : **200** — `season = dry`.",
+      "metaSortKey": -998,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_043",
+      "_type": "request",
+      "parentId": "fld_agbea_5",
+      "name": "M20 · Agriculture — Maritime, mai 2024",
+      "method": "GET",
+      "url": "{{ _.base_url }}/regions/maritime/agriculture",
+      "parameters": [
+        {
+          "name": "date",
+          "value": "2024-05",
+          "disabled": false
+        }
+      ],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M20** — `GET /api/v1/regions/maritime/agriculture`\n\n**Attendu** : **200** — `season = rainy` (le sud a deux saisons des pluies : avril–juillet et septembre–octobre).",
+      "metaSortKey": -997,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_044",
+      "_type": "request",
+      "parentId": "fld_agbea_5",
+      "name": "M21 · Voix — transcription",
+      "method": "POST",
+      "url": "{{ _.base_url }}/voice/transcribe",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M21** — `POST /api/v1/voice/transcribe`\n\n**Attendu** : **501** — code `in_development`.",
+      "metaSortKey": -996,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "fld_agbea_6",
+      "_type": "request_group",
+      "parentId": "wrk_agbea_climat",
+      "name": "Bloc 6 — IA et RAG",
+      "description": "Ingestion du corpus, explication, chat. Les réponses IA réelles exigent P3 + une clé LLM côté serveur.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -995,
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_045",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M22 · Ingestion du corpus RAG",
+      "method": "POST",
+      "url": "{{ _.base_url }}/admin/rag/ingest",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M22** — `POST /api/v1/admin/rag/ingest`\n\n**Attendu** : **200** — `response = {\"documents\": n, \"chunks\": n}` avec `documents ≥ 5` et `chunks > 0`. **Relancer : résultat identique** (pas de doublons).",
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_046",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M23 · Documents du corpus",
+      "method": "GET",
+      "url": "{{ _.base_url }}/admin/rag/documents",
+      "parameters": [],
+      "headers": [],
+      "body": {},
+      "authentication": {},
+      "description": "**Mission M23** — `GET /api/v1/admin/rag/documents`\n\n**Attendu** : **200** — au moins 5 documents, chacun avec `title`, `source_url` et `chunks > 0`.",
+      "metaSortKey": -999,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_047",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M24 · Expliquer — agriculteur",
+      "method": "POST",
+      "url": "{{ _.base_url }}/explain",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"region_id\": \"savanes\",\n  \"indicator\": \"precipitation\",\n  \"date\": \"2024-08\",\n  \"mode\": \"public\",\n  \"lang\": \"fr\",\n  \"profile\": \"farmer\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M24** — `POST /api/v1/explain`\n\n**Attendu** : **200** — chaque phrase a une `nature` (observed / interpreted / predicted) et au moins un `source_id` présent dans `sources`. `disclaimer` contient « prévisions officielles ». Ton simple, phrases courtes.",
+      "metaSortKey": -998,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_048",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M24 · Expliquer — chercheur",
+      "method": "POST",
+      "url": "{{ _.base_url }}/explain",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"region_id\": \"savanes\",\n  \"indicator\": \"precipitation\",\n  \"date\": \"2024-08\",\n  \"mode\": \"public\",\n  \"lang\": \"fr\",\n  \"profile\": \"researcher\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M24** — `POST /api/v1/explain`\n\n**Attendu** : **200** — texte **différent** de celui de l'agriculteur, plus précis, avec unités (« mm »).",
+      "metaSortKey": -997,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_049",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M25 · Chat en flux (SSE)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat/stream",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"message\": \"Comment évolue la pluie dans les Savanes ?\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M25** — `POST /api/v1/chat/stream`\n\n**Attendu** : **200**, `Content-Type: text/event-stream` (**pas d'enveloppe** : flux SSE). Lignes `data: {...}` dans l'ordre : `meta` → `status` (≥ 1) → `token` (≥ 1) → `data` (optionnel) → `sources` → `done`.",
+      "metaSortKey": -996,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_050",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M25 · Chat en flux — hors sujet",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat/stream",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"message\": \"Qui a gagné la Ligue des champions ?\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M25** — `POST /api/v1/chat/stream`\n\n**Attendu** : **200** — réponse polie qui ramène au climat / à l'environnement du Togo (le texte des `token` contient « climat », « environnement » ou « Togo »).",
+      "metaSortKey": -995,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_051",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M26 · Chat — nouveau fil",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"message\": \"Bonjour\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M26** — `POST /api/v1/chat`\n\n**Attendu** : **200** — `thread_id` et `answer` remplis.\n\n👉 **Copie le `thread_id` dans la variable `thread_id` de l'environnement** pour la requête suivante.",
+      "metaSortKey": -994,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_052",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M26 · Chat — même fil",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"message\": \"Et à Kara ?\",\n  \"thread_id\": \"{{ _.thread_id }}\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M26** — `POST /api/v1/chat`\n\n**Attendu** : **200** — renvoie **le même** `thread_id` que la requête précédente.",
+      "metaSortKey": -993,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_053",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M26 · Chat — rattaché à la session (X-Session-Id)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "X-Session-Id",
+          "value": "{{ _.session_id }}"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"message\": \"Pluie dans les Savanes ?\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M26** — `POST /api/v1/chat`\n\n**Attendu** : **200**. Ensuite « M04 · Lire la session » : le fil apparaît dans `threads` (titre = 60 premiers caractères du message), trié par `updated_at` décroissant.\n\nUtilise `{{ _.session_id }}` : colle d'abord le `session_id` renvoyé par « M03 · Créer une session » dans l'environnement (Ctrl+E).",
+      "metaSortKey": -992,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    },
+    {
+      "_id": "req_agbea_054",
+      "_type": "request",
+      "parentId": "fld_agbea_6",
+      "name": "M26 · Chat — message vide (erreur)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"message\": \"\"\n}"
+      },
+      "authentication": {},
+      "description": "**Mission M26** — `POST /api/v1/chat`\n\n**Attendu** : **422** — code `validation_error`.",
+      "metaSortKey": -991,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "created": 1794670419471,
+      "modified": 1794670419471
+    }
+  ]
+}

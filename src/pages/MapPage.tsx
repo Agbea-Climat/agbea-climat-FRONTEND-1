@@ -172,6 +172,7 @@ export function MapPage() {
         indicator_id: indId,
         profile,
         language,
+        mode,
       });
       setExplanations((prev) => ({ ...prev, [indId]: res.sentences }));
     } finally {

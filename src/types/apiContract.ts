@@ -76,6 +76,8 @@ export interface RegionInfo {
   climate_zone_fr: string;
   crops_en: string[];
   crops_fr: string[];
+  bbox?: [number, number, number, number]; // [minLon, minLat, maxLon, maxLat] (real backend)
+  area_km2?: number; // real backend
 }
 
 export interface RegionsResponse {
@@ -90,10 +92,15 @@ export interface RegionGeoJsonFeature {
     name: string;
     capital: string;
   };
-  geometry: {
-    type: 'Polygon';
-    coordinates: [number, number][][]; // [lon, lat]
-  };
+  geometry:
+    | {
+        type: 'Polygon';
+        coordinates: [number, number][][]; // [lon, lat]
+      }
+    | {
+        type: 'MultiPolygon'; // real backend boundaries
+        coordinates: [number, number][][][];
+      };
 }
 
 export interface RegionsGeoJsonResponse {
@@ -338,3 +345,256 @@ export interface ChatResponse {
   sources: ChatSourceRef[];
   chart?: ChatChartEvent | null;
 }
+
+/* ------------------------------------------------------------------------- *
+ * Real backend raw payloads (https://agbea.api.pepit.cloud/api/v1).
+ * Every JSON response is wrapped as {status, message, response}; these types
+ * describe `response`. They are mapped to the view-model types above by the
+ * adapters in services/climateApi.ts (source of truth: insomnia_agbea_climat.json).
+ * ------------------------------------------------------------------------- */
+
+export type BackendIndicatorId = 'precipitation' | 'ndvi' | 'lst_day' | 'elevation';
+export type BackendNature = 'observed' | 'interpreted' | 'predicted';
+
+export interface BackendEnvelope<T> {
+  status: 'success' | 'error' | string;
+  message: string;
+  response: T;
+}
+
+/** Error envelope payload: {code, details} */
+export interface BackendErrorPayload {
+  code: string;
+  details: unknown;
+}
+
+/** M02 */
+export interface BackendMeta {
+  version: string;
+  regions_count: number;
+  data_last_updated: string; // YYYY-MM-DD
+  features: { id: string; title: string; status: string }[];
+}
+
+/** M27 (array) */
+export interface BackendProfile {
+  id: ProfileId;
+  title: string;
+  audience: string;
+  benefit: string;
+  icon: string;
+  default_mode: ExperienceMode;
+  landing_screen: string;
+  featured_indicators: BackendIndicatorId[];
+  ai_tone: string;
+}
+
+/** M03 / M04 */
+export interface BackendSessionPreferences {
+  profile: ProfileId | null;
+  region_id: RegionId | null;
+  lang: LanguageCode | null;
+  mode: ExperienceMode | null;
+}
+
+export interface BackendSession {
+  session_id: string;
+  preferences: BackendSessionPreferences;
+  threads: { thread_id: string; title: string; updated_at: string }[];
+  created_at: string;
+  last_seen_at: string;
+}
+
+/** M06 (array), M08, M09 */
+export interface BackendRegion {
+  id: RegionId;
+  name: string;
+  capital: string;
+  centroid: [number, number];
+  bbox: [number, number, number, number];
+  area_km2: number;
+}
+
+/** M10 (array) */
+export interface BackendIndicator {
+  id: BackendIndicatorId;
+  label: string;
+  units: string;
+  dataset_id: string;
+  description_public: string;
+  description_scientific: string;
+  has_timeseries: boolean;
+  layer_id: string | null;
+  status: string;
+}
+
+/** M11 (array), M12 */
+export interface BackendDataset {
+  id: string;
+  name: string;
+  provider: string;
+  variable: string;
+  indicator: BackendIndicatorId;
+  units: string;
+  spatial_resolution: string;
+  temporal_resolution: string;
+  coverage: string;
+  period_start: string;
+  period_end: string | null;
+  limitations: string[];
+  source_url: string;
+  citation: string;
+}
+
+/** M13 (array) */
+export interface BackendLayer {
+  id: string;
+  indicator: BackendIndicatorId;
+  dataset_id: string;
+  title: string;
+  type: string;
+  url_template: string; // contains {date}, {z}, {y}, {x}
+  available_dates: string[];
+  default_date: string;
+  opacity: number;
+  legend: { value: number; color: string; label: string | null }[];
+  modes: ExperienceMode[];
+  max_zoom: number;
+}
+
+/** Indicator snapshot (M14 indicators[], M19 regions[].indicators[], chat data) */
+export interface BackendSnapshot {
+  indicator: BackendIndicatorId;
+  label: string;
+  value: number | null;
+  units: string;
+  date: string;
+  baseline: number | null;
+  anomaly_pct: number | null;
+  trend: TrendDirection;
+  plain_summary: string;
+  dataset_id: string;
+  valid_frac: number | null;
+  low_coverage: boolean;
+}
+
+/** M14 */
+export interface BackendRegionSummary {
+  region: BackendRegion;
+  date: string;
+  indicators: BackendSnapshot[];
+}
+
+/** M15 */
+export interface BackendTimeseries {
+  region_id: RegionId;
+  indicator: BackendIndicatorId;
+  units: string;
+  granularity: 'month' | 'year';
+  baseline_period: [string, string];
+  points: {
+    date: string;
+    value: number | null;
+    baseline: number | null;
+    anomaly_pct: number | null;
+    valid_frac: number | null;
+    low_coverage: boolean;
+  }[];
+  dataset_id: string;
+  nature: BackendNature;
+}
+
+/** M16 */
+export interface BackendComparePeriod {
+  label: string;
+  start: string;
+  end: string;
+  mean: number | null;
+  min: number | null;
+  max: number | null;
+}
+
+export interface BackendCompare {
+  region_id: RegionId;
+  indicator: BackendIndicatorId;
+  units: string;
+  period_a: BackendComparePeriod;
+  period_b: BackendComparePeriod;
+  delta_abs: number | null;
+  delta_pct: number | null;
+  dataset_id: string;
+}
+
+/** M18 */
+export interface BackendBeforeAfter {
+  layer_id: string;
+  before: { date: string; url_template: string };
+  after: { date: string; url_template: string };
+  comparison: BackendCompare | null;
+}
+
+/** Sourced statement (M19 highlights, M20, M24, M26) */
+export interface BackendStatement {
+  text: string;
+  nature: BackendNature;
+  source_ids: string[];
+}
+
+/** M19 */
+export interface BackendDashboard {
+  date: string;
+  regions: BackendRegionSummary[];
+  highlights: BackendStatement[];
+}
+
+/** M20 */
+export interface BackendAgriculture {
+  region_id: RegionId;
+  date: string;
+  season: 'rainy' | 'dry';
+  rainfall_status: TrendDirection;
+  vegetation_status: TrendDirection;
+  statements: BackendStatement[];
+  disclaimer: string;
+}
+
+/** M24 / M25 / M26 source reference */
+export interface BackendSource {
+  id: string; // "computed:…", "ds:…", "doc:…"
+  kind: 'computed' | 'dataset' | 'document' | string;
+  title: string;
+  url: string | null;
+  dataset_id: string | null;
+  snippet: string | null;
+  page: number | null;
+}
+
+/** M24 */
+export interface BackendExplain {
+  title: string;
+  statements: BackendStatement[];
+  sources: BackendSource[];
+  disclaimer: string;
+}
+
+/** M26 */
+export interface BackendChat {
+  thread_id: string;
+  answer: string;
+  statements: BackendStatement[];
+  sources: BackendSource[];
+  data: { snapshots?: BackendSnapshot[]; series?: BackendTimeseries | null } | null;
+}
+
+/**
+ * M25 SSE events: `data: {"type": …}` lines, no `event:` field, no envelope.
+ * Order: meta → status (≥1) → token (≥1) → data? → sources → done.
+ */
+export type BackendChatStreamEvent =
+  | { type: 'meta'; thread_id: string }
+  | { type: 'status'; step: string }
+  | { type: 'token'; content: string }
+  | { type: 'data'; series: BackendTimeseries | null; snapshot: BackendSnapshot | null }
+  | { type: 'sources'; sources: BackendSource[] }
+  | { type: 'done'; statements?: BackendStatement[] }
+  | { type: 'error'; message?: string; code?: string };

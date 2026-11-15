@@ -25,8 +25,57 @@ export class ApiError extends Error {
 
 let probePromise: Promise<'backend' | 'standalone' | 'offline'> | null = null;
 
+/**
+ * True when the probed backend is the real AGBÉA API (every response wrapped as
+ * {"status":"success","message":"OK","response":<payload>}). False for the local
+ * server.ts mock, which returns un-enveloped payloads in the front contract shape.
+ */
+let envelopedBackend = false;
+
 export function resetBackendProbe(): void {
   probePromise = null;
+}
+
+/** Whether the detected backend uses the real AGBÉA response envelope. */
+export async function isEnvelopedBackend(): Promise<boolean> {
+  const mode = await detectBackendMode();
+  return mode === 'backend' && envelopedBackend;
+}
+
+interface ApiEnvelope<T = unknown> {
+  status: string;
+  message?: string;
+  response?: T;
+}
+
+function isEnvelope(body: unknown): body is ApiEnvelope {
+  return (
+    typeof body === 'object' &&
+    body !== null &&
+    'status' in body &&
+    'response' in body &&
+    typeof (body as ApiEnvelope).status === 'string'
+  );
+}
+
+/** Returns the payload of an enveloped response, or the body unchanged (server.ts mock). */
+export function unwrapEnvelope<T>(body: unknown): T {
+  if (isEnvelope(body)) return body.response as T;
+  return body as T;
+}
+
+/** Builds an ApiError from an error body (enveloped or legacy shapes). */
+export function toApiError(body: any, status: number): ApiError {
+  if (isEnvelope(body)) {
+    const payload = (body.response || {}) as { code?: string };
+    return new ApiError(body.message || `Error ${status}`, status, payload.code);
+  }
+  const msg =
+    body?.message ||
+    body?.error?.message ||
+    (typeof body?.error === 'string' ? body.error : undefined) ||
+    `Error ${status}`;
+  return new ApiError(msg, status, body?.code);
 }
 
 export async function detectBackendMode(): Promise<'backend' | 'standalone' | 'offline'> {
@@ -41,7 +90,18 @@ export async function detectBackendMode(): Promise<'backend' | 'standalone' | 'o
 
       if (response.ok && contentType.includes('application/json')) {
         const data = await response.json().catch(() => null);
+        // Real backend: {"status":"success","response":{"status":"ok"}}
+        if (isEnvelope(data)) {
+          const payload = data.response as { status?: string } | null | undefined;
+          if (data.status === 'success' && payload?.status === 'ok') {
+            envelopedBackend = true;
+            return 'backend';
+          }
+          return 'offline';
+        }
+        // Local server.ts mock: {"status":"ok"}
         if (data && data.status === 'ok') {
+          envelopedBackend = false;
           return 'backend';
         }
         return 'offline';
@@ -102,15 +162,15 @@ export async function requestJson<T>(
   if (!response.ok) {
     if (contentType.includes('application/json')) {
       const errBody = await response.json().catch(() => ({}));
-      const msg =
-        errBody?.message ||
-        errBody?.error?.message ||
-        errBody?.error ||
-        `Error ${response.status}`;
-      throw new ApiError(msg, response.status, errBody?.code);
+      throw toApiError(errBody, response.status);
     }
     throw new ApiError(`HTTP ${response.status}`, response.status);
   }
 
-  return response.json() as Promise<T>;
+  const body = await response.json();
+  // Envelope with a non-success status on a 2xx response is still an error.
+  if (isEnvelope(body) && body.status !== 'success') {
+    throw toApiError(body, response.status);
+  }
+  return unwrapEnvelope<T>(body);
 }
