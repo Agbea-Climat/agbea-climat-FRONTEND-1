@@ -23,6 +23,7 @@ export function Navbar() {
   const navItems = [
     { to: '/', label: language === 'fr' ? 'Accueil' : 'Home', end: true },
     { to: '/carte', label: language === 'fr' ? 'Explorer la carte' : 'Explore Map', end: false },
+    { to: '/donnees', label: language === 'fr' ? 'Atlas des données' : 'Data atlas', end: false },
     { to: '/comparer', label: language === 'fr' ? 'Comparer' : 'Before / After', end: false },
     { to: '/assistant', label: language === 'fr' ? 'Assistant AGBÉA' : 'AI Chat', end: false },
     { to: '/a-propos', label: language === 'fr' ? 'À propos' : 'Data sources', end: false },

@@ -5,7 +5,7 @@
       "destination": "https://agbea.api.pepit.cloud/api/v1/:path*"
     },
     {
-      "source": "/((?!api/|agbea-api/|assets/).*)",
+      "source": "/((?!api/|agbea-api/|assets/|atlas/).*)",
       "destination": "/index.html"
     }
   ]

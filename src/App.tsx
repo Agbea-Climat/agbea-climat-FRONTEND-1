@@ -8,6 +8,7 @@ import { PublicModePage } from './pages/PublicModePage.tsx';
 import { AssistantPage } from './pages/AssistantPage.tsx';
 import { ScientificModePage } from './pages/ScientificModePage.tsx';
 import { AboutPage } from './pages/AboutPage.tsx';
+import { AtlasPage } from './pages/AtlasPage.tsx';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/carte" element={<MapPage />} />
+            <Route path="/donnees" element={<AtlasPage />} />
             <Route path="/comparer" element={<ComparePage />} />
             <Route path="/grand-public" element={<PublicModePage />} />
             <Route path="/assistant" element={<AssistantPage />} />

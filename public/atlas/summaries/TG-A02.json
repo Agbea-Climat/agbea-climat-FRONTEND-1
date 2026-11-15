@@ -1,0 +1,1565 @@
+{
+ "unit": {
+  "id": "TG-A02",
+  "level": "prefecture",
+  "name": "Avé",
+  "parent_id": "TG-A",
+  "area_km2": 1020.5,
+  "centroid": [
+   0.92486,
+   6.47225
+  ]
+ },
+ "elevation_m": {
+  "mean": 88.0,
+  "min": 10.7,
+  "p10": 56.2,
+  "median": 90.8,
+  "p90": 115.1,
+  "max": 149.3,
+  "pct_below_5m": 0.0,
+  "pct_below_10m": 0.0
+ },
+ "latest": {
+  "rainfall": {
+   "date": "2025-09",
+   "value": 112.9544,
+   "clim_mean": 135.0646,
+   "anomaly": -22.1102,
+   "anomaly_pct": -16.4,
+   "valid_frac": 1.0,
+   "unit": "mm",
+   "dataset": "imerg_monthly",
+   "nature": "observed"
+  },
+  "ndvi": {
+   "date": "2026-10",
+   "value": 0.7049,
+   "clim_mean": 0.7372,
+   "anomaly": -0.0323,
+   "anomaly_pct": null,
+   "valid_frac": 0.969,
+   "unit": "sans unité (-1 à 1)",
+   "dataset": "modis_ndvi",
+   "nature": "observed"
+  },
+  "lst_day": {
+   "date": "2022-12",
+   "value": 30.5681,
+   "clim_mean": 29.9345,
+   "anomaly": 0.6336,
+   "anomaly_pct": null,
+   "valid_frac": 1.0,
+   "unit": "°C",
+   "dataset": "modis_lst",
+   "nature": "observed"
+  },
+  "lst_night": {
+   "date": "2022-12",
+   "value": 18.5074,
+   "clim_mean": 20.9307,
+   "anomaly": -2.4233,
+   "anomaly_pct": null,
+   "valid_frac": 1.0,
+   "unit": "°C",
+   "dataset": "modis_lst",
+   "nature": "observed"
+  },
+  "rainfall_30d": {
+   "start": "2026-10-14",
+   "end": "2026-11-12",
+   "value": 82.7,
+   "normal": 97.3,
+   "anomaly_pct": -15.0,
+   "valid_frac": 1.0,
+   "unit": "mm",
+   "dataset": "imerg_daily_late",
+   "nature": "observed",
+   "normal_note": "normale = climatologie mensuelle IMERG Final ramenée au jour"
+  }
+ },
+ "annual": {
+  "lst_day": [
+   {
+    "year": 2001,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2002,
+    "value": 30.9263,
+    "anomaly": 0.4456,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2003,
+    "value": 29.9467,
+    "anomaly": -0.534,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2004,
+    "value": 29.3019,
+    "anomaly": -1.1788,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2005,
+    "value": 30.9429,
+    "anomaly": 0.4622,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2006,
+    "value": 30.1775,
+    "anomaly": -0.3032,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2007,
+    "value": 30.4312,
+    "anomaly": -0.0495,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2008,
+    "value": 29.955,
+    "anomaly": -0.5257,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2009,
+    "value": 30.5632,
+    "anomaly": 0.0825,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2010,
+    "value": 30.4442,
+    "anomaly": -0.0365,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2011,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2012,
+    "value": 30.1702,
+    "anomaly": -0.3105,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2013,
+    "value": 30.6727,
+    "anomaly": 0.192,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2014,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 8
+   },
+   {
+    "year": 2015,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2016,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 8
+   },
+   {
+    "year": 2017,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2018,
+    "value": 30.6349,
+    "anomaly": 0.1543,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2019,
+    "value": 31.0291,
+    "anomaly": 0.5484,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2020,
+    "value": 31.5339,
+    "anomaly": 1.0533,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2021,
+    "value": 30.2082,
+    "anomaly": -0.2725,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2022,
+    "value": 30.9616,
+    "anomaly": 0.4809,
+    "anomaly_pct": null,
+    "n_months": 10
+   }
+  ],
+  "lst_night": [
+   {
+    "year": 2001,
+    "value": 20.0523,
+    "anomaly": -0.5843,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2002,
+    "value": 20.221,
+    "anomaly": -0.4156,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2003,
+    "value": 20.3519,
+    "anomaly": -0.2846,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2004,
+    "value": 20.0169,
+    "anomaly": -0.6196,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2005,
+    "value": 20.2888,
+    "anomaly": -0.3478,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2006,
+    "value": 20.4174,
+    "anomaly": -0.2191,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2007,
+    "value": 19.9096,
+    "anomaly": -0.727,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2008,
+    "value": 20.677,
+    "anomaly": 0.0405,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2009,
+    "value": 20.5034,
+    "anomaly": -0.1332,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2010,
+    "value": 20.6198,
+    "anomaly": -0.0168,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2011,
+    "value": 20.5157,
+    "anomaly": -0.1209,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2012,
+    "value": 20.6466,
+    "anomaly": 0.01,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2013,
+    "value": 20.6812,
+    "anomaly": 0.0446,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2014,
+    "value": 20.7592,
+    "anomaly": 0.1227,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2015,
+    "value": 20.4866,
+    "anomaly": -0.1499,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2016,
+    "value": 21.1591,
+    "anomaly": 0.5226,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2017,
+    "value": 21.2934,
+    "anomaly": 0.6569,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2018,
+    "value": 21.1756,
+    "anomaly": 0.5391,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2019,
+    "value": 21.6127,
+    "anomaly": 0.9762,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2020,
+    "value": 21.3426,
+    "anomaly": 0.7061,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2021,
+    "value": 21.6183,
+    "anomaly": 0.9817,
+    "anomaly_pct": null,
+    "n_months": 12
+   },
+   {
+    "year": 2022,
+    "value": 20.6878,
+    "anomaly": 0.0513,
+    "anomaly_pct": null,
+    "n_months": 12
+   }
+  ],
+  "ndvi": [
+   {
+    "year": 2001,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2002,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2003,
+    "value": 0.6543,
+    "anomaly": 0.0189,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2004,
+    "value": 0.6206,
+    "anomaly": -0.0147,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2005,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2006,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2007,
+    "value": 0.6179,
+    "anomaly": -0.0174,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2008,
+    "value": 0.6308,
+    "anomaly": -0.0045,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2009,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2010,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2011,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 7
+   },
+   {
+    "year": 2012,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2013,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2014,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 7
+   },
+   {
+    "year": 2015,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 8
+   },
+   {
+    "year": 2016,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 7
+   },
+   {
+    "year": 2017,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 7
+   },
+   {
+    "year": 2018,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   },
+   {
+    "year": 2019,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 7
+   },
+   {
+    "year": 2020,
+    "value": 0.6529,
+    "anomaly": 0.0176,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2021,
+    "value": 0.6808,
+    "anomaly": 0.0455,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2022,
+    "value": 0.6487,
+    "anomaly": 0.0134,
+    "anomaly_pct": null,
+    "n_months": 10
+   },
+   {
+    "year": 2023,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 8
+   },
+   {
+    "year": 2024,
+    "value": 0.6398,
+    "anomaly": 0.0045,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2025,
+    "value": 0.67,
+    "anomaly": 0.0347,
+    "anomaly_pct": null,
+    "n_months": 11
+   },
+   {
+    "year": 2026,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   }
+  ],
+  "rainfall": [
+   {
+    "year": 2001,
+    "value": 961.0044,
+    "anomaly": -104.7355,
+    "anomaly_pct": -9.8,
+    "n_months": 12
+   },
+   {
+    "year": 2002,
+    "value": 1146.1507,
+    "anomaly": 80.4108,
+    "anomaly_pct": 7.5,
+    "n_months": 12
+   },
+   {
+    "year": 2003,
+    "value": 1048.6391,
+    "anomaly": -17.1008,
+    "anomaly_pct": -1.6,
+    "n_months": 12
+   },
+   {
+    "year": 2004,
+    "value": 1172.3806,
+    "anomaly": 106.6407,
+    "anomaly_pct": 10.0,
+    "n_months": 12
+   },
+   {
+    "year": 2005,
+    "value": 969.2225,
+    "anomaly": -96.5174,
+    "anomaly_pct": -9.1,
+    "n_months": 12
+   },
+   {
+    "year": 2006,
+    "value": 1145.9879,
+    "anomaly": 80.248,
+    "anomaly_pct": 7.5,
+    "n_months": 12
+   },
+   {
+    "year": 2007,
+    "value": 1233.5255,
+    "anomaly": 167.7856,
+    "anomaly_pct": 15.7,
+    "n_months": 12
+   },
+   {
+    "year": 2008,
+    "value": 1232.6177,
+    "anomaly": 166.8778,
+    "anomaly_pct": 15.7,
+    "n_months": 12
+   },
+   {
+    "year": 2009,
+    "value": 1150.593,
+    "anomaly": 84.8531,
+    "anomaly_pct": 8.0,
+    "n_months": 12
+   },
+   {
+    "year": 2010,
+    "value": 1171.1536,
+    "anomaly": 105.4137,
+    "anomaly_pct": 9.9,
+    "n_months": 12
+   },
+   {
+    "year": 2011,
+    "value": 1020.0365,
+    "anomaly": -45.7034,
+    "anomaly_pct": -4.3,
+    "n_months": 12
+   },
+   {
+    "year": 2012,
+    "value": 985.9379,
+    "anomaly": -79.802,
+    "anomaly_pct": -7.5,
+    "n_months": 12
+   },
+   {
+    "year": 2013,
+    "value": 843.9382,
+    "anomaly": -221.8017,
+    "anomaly_pct": -20.8,
+    "n_months": 12
+   },
+   {
+    "year": 2014,
+    "value": 1049.7806,
+    "anomaly": -15.9593,
+    "anomaly_pct": -1.5,
+    "n_months": 12
+   },
+   {
+    "year": 2015,
+    "value": 878.0118,
+    "anomaly": -187.7281,
+    "anomaly_pct": -17.6,
+    "n_months": 12
+   },
+   {
+    "year": 2016,
+    "value": 1005.7184,
+    "anomaly": -60.0215,
+    "anomaly_pct": -5.6,
+    "n_months": 12
+   },
+   {
+    "year": 2017,
+    "value": 980.8601,
+    "anomaly": -84.8798,
+    "anomaly_pct": -8.0,
+    "n_months": 12
+   },
+   {
+    "year": 2018,
+    "value": 982.8092,
+    "anomaly": -82.9307,
+    "anomaly_pct": -7.8,
+    "n_months": 12
+   },
+   {
+    "year": 2019,
+    "value": 1320.8562,
+    "anomaly": 255.1163,
+    "anomaly_pct": 23.9,
+    "n_months": 12
+   },
+   {
+    "year": 2020,
+    "value": 1015.5732,
+    "anomaly": -50.1667,
+    "anomaly_pct": -4.7,
+    "n_months": 12
+   },
+   {
+    "year": 2021,
+    "value": 1044.9834,
+    "anomaly": -20.7565,
+    "anomaly_pct": -1.9,
+    "n_months": 12
+   },
+   {
+    "year": 2022,
+    "value": 1131.6543,
+    "anomaly": 65.9144,
+    "anomaly_pct": 6.2,
+    "n_months": 12
+   },
+   {
+    "year": 2023,
+    "value": 1179.4908,
+    "anomaly": 113.7509,
+    "anomaly_pct": 10.7,
+    "n_months": 12
+   },
+   {
+    "year": 2024,
+    "value": 945.4426,
+    "anomaly": -120.2973,
+    "anomaly_pct": -11.3,
+    "n_months": 12
+   },
+   {
+    "year": 2025,
+    "value": null,
+    "anomaly": null,
+    "anomaly_pct": null,
+    "n_months": 9
+   }
+  ]
+ },
+ "trends": {
+  "lst_day": {
+   "annual": {
+    "n_years": 14,
+    "first_year": 2002,
+    "last_year": 2020,
+    "period_mean": 30.4807,
+    "sen_slope_per_decade": 0.594,
+    "sen_ci95_low_per_decade": 0.0166,
+    "sen_ci95_high_per_decade": 0.97645,
+    "sen_slope_pct_per_decade": null,
+    "p_value": 0.04718,
+    "significant": true,
+    "direction": "hausse"
+   },
+   "jfm": {
+    "n_years": 20,
+    "first_year": 2001,
+    "last_year": 2020,
+    "period_mean": 32.4389,
+    "sen_slope_per_decade": 0.6652,
+    "sen_ci95_low_per_decade": 0.08323,
+    "sen_ci95_high_per_decade": 1.39669,
+    "sen_slope_pct_per_decade": null,
+    "p_value": 0.03976,
+    "significant": true,
+    "direction": "hausse"
+   }
+  },
+  "lst_night": {
+   "annual": {
+    "n_years": 20,
+    "first_year": 2001,
+    "last_year": 2020,
+    "period_mean": 20.6365,
+    "sen_slope_per_decade": 0.68982,
+    "sen_ci95_low_per_decade": 0.4985,
+    "sen_ci95_high_per_decade": 0.88167,
+    "sen_slope_pct_per_decade": null,
+    "p_value": 0.0,
+    "significant": true,
+    "direction": "hausse"
+   },
+   "jfm": {
+    "n_years": 19,
+    "first_year": 2001,
+    "last_year": 2020,
+    "period_mean": 21.1831,
+    "sen_slope_per_decade": 1.1295,
+    "sen_ci95_low_per_decade": 0.67733,
+    "sen_ci95_high_per_decade": 1.79456,
+    "sen_slope_pct_per_decade": null,
+    "p_value": 8e-05,
+    "significant": true,
+    "direction": "hausse"
+   },
+   "mjjaso": {
+    "n_years": 20,
+    "first_year": 2001,
+    "last_year": 2020,
+    "period_mean": 20.0025,
+    "sen_slope_per_decade": 0.60575,
+    "sen_ci95_low_per_decade": 0.323,
+    "sen_ci95_high_per_decade": 0.91614,
+    "sen_slope_pct_per_decade": null,
+    "p_value": 0.00064,
+    "significant": true,
+    "direction": "hausse"
+   }
+  },
+  "ndvi": {
+   "jfm": {
+    "n_years": 25,
+    "first_year": 2001,
+    "last_year": 2026,
+    "period_mean": 0.4941,
+    "sen_slope_per_decade": 0.0383,
+    "sen_ci95_low_per_decade": 0.01167,
+    "sen_ci95_high_per_decade": 0.06341,
+    "sen_slope_pct_per_decade": null,
+    "p_value": 0.00986,
+    "significant": true,
+    "direction": "hausse"
+   }
+  },
+  "rainfall": {
+   "annual": {
+    "n_years": 24,
+    "first_year": 2001,
+    "last_year": 2024,
+    "period_mean": 1067.3487,
+    "sen_slope_per_decade": -11.33567,
+    "sen_ci95_low_per_decade": -110.19373,
+    "sen_ci95_high_per_decade": 62.91425,
+    "sen_slope_pct_per_decade": -1.06,
+    "p_value": 0.60617,
+    "significant": false,
+    "direction": "pas de tendance significative"
+   },
+   "jfm": {
+    "n_years": 25,
+    "first_year": 2001,
+    "last_year": 2025,
+    "period_mean": 137.9042,
+    "sen_slope_per_decade": -3.75607,
+    "sen_ci95_low_per_decade": -23.28986,
+    "sen_ci95_high_per_decade": 13.51837,
+    "sen_slope_pct_per_decade": -2.72,
+    "p_value": 0.76385,
+    "significant": false,
+    "direction": "pas de tendance significative"
+   },
+   "mjjaso": {
+    "n_years": 24,
+    "first_year": 2001,
+    "last_year": 2024,
+    "period_mean": 746.7372,
+    "sen_slope_per_decade": -33.3393,
+    "sen_ci95_low_per_decade": -91.20187,
+    "sen_ci95_high_per_decade": 50.84775,
+    "sen_slope_pct_per_decade": -4.46,
+    "p_value": 0.57223,
+    "significant": false,
+    "direction": "pas de tendance significative"
+   }
+  }
+ },
+ "recent_monthly": {
+  "lst_day": [
+   {
+    "date": "2021-01",
+    "value": 31.254,
+    "clim_mean": 31.2842,
+    "anomaly": -0.0302,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-02",
+    "value": 31.8952,
+    "clim_mean": 33.4691,
+    "anomaly": -1.5739,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-03",
+    "value": 32.6464,
+    "clim_mean": 32.5635,
+    "anomaly": 0.0829,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-04",
+    "value": 31.3396,
+    "clim_mean": 31.2914,
+    "anomaly": 0.0482,
+    "valid_frac": 0.948
+   },
+   {
+    "date": "2021-05",
+    "value": 31.5041,
+    "clim_mean": 30.2487,
+    "anomaly": 1.2554,
+    "valid_frac": 0.878
+   },
+   {
+    "date": "2021-06",
+    "value": 30.3989,
+    "clim_mean": 27.8537,
+    "anomaly": 2.5452,
+    "valid_frac": 0.877
+   },
+   {
+    "date": "2021-07",
+    "value": 27.4331,
+    "clim_mean": 28.3465,
+    "anomaly": -0.9134,
+    "valid_frac": 0.998
+   },
+   {
+    "date": "2021-08",
+    "value": 26.688,
+    "clim_mean": 29.4767,
+    "anomaly": -2.7887,
+    "valid_frac": 0.515
+   },
+   {
+    "date": "2021-09",
+    "value": null,
+    "clim_mean": 29.6713,
+    "anomaly": null,
+    "valid_frac": 0.479
+   },
+   {
+    "date": "2021-10",
+    "value": 30.1785,
+    "clim_mean": 29.8969,
+    "anomaly": 0.2816,
+    "valid_frac": 0.984
+   },
+   {
+    "date": "2021-11",
+    "value": 29.4614,
+    "clim_mean": 29.913,
+    "anomaly": -0.4516,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-12",
+    "value": 29.4905,
+    "clim_mean": 29.9345,
+    "anomaly": -0.444,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-01",
+    "value": 32.4449,
+    "clim_mean": 31.2842,
+    "anomaly": 1.1607,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-02",
+    "value": 34.7114,
+    "clim_mean": 33.4691,
+    "anomaly": 1.2423,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-03",
+    "value": 33.9614,
+    "clim_mean": 32.5635,
+    "anomaly": 1.3979,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-04",
+    "value": 31.5493,
+    "clim_mean": 31.2914,
+    "anomaly": 0.2579,
+    "valid_frac": 0.974
+   },
+   {
+    "date": "2022-05",
+    "value": 28.889,
+    "clim_mean": 30.2487,
+    "anomaly": -1.3597,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-06",
+    "value": 27.7145,
+    "clim_mean": 27.8537,
+    "anomaly": -0.1392,
+    "valid_frac": 0.964
+   },
+   {
+    "date": "2022-07",
+    "value": 28.7375,
+    "clim_mean": 28.3465,
+    "anomaly": 0.391,
+    "valid_frac": 0.978
+   },
+   {
+    "date": "2022-08",
+    "value": 30.8637,
+    "clim_mean": 29.4767,
+    "anomaly": 1.387,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-09",
+    "value": null,
+    "clim_mean": 29.6713,
+    "anomaly": null,
+    "valid_frac": 0.0
+   },
+   {
+    "date": "2022-10",
+    "value": null,
+    "clim_mean": 29.8969,
+    "anomaly": null,
+    "valid_frac": 0.277
+   },
+   {
+    "date": "2022-11",
+    "value": 30.1763,
+    "clim_mean": 29.913,
+    "anomaly": 0.2633,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-12",
+    "value": 30.5681,
+    "clim_mean": 29.9345,
+    "anomaly": 0.6336,
+    "valid_frac": 1.0
+   }
+  ],
+  "lst_night": [
+   {
+    "date": "2021-01",
+    "value": 22.2129,
+    "clim_mean": 20.2853,
+    "anomaly": 1.9276,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-02",
+    "value": 22.8264,
+    "clim_mean": 21.5707,
+    "anomaly": 1.2557,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-03",
+    "value": 22.0248,
+    "clim_mean": 21.773,
+    "anomaly": 0.2518,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-04",
+    "value": 22.6604,
+    "clim_mean": 21.688,
+    "anomaly": 0.9724,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-05",
+    "value": 22.4764,
+    "clim_mean": 21.157,
+    "anomaly": 1.3194,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-06",
+    "value": 21.2449,
+    "clim_mean": 20.1759,
+    "anomaly": 1.069,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-07",
+    "value": 19.692,
+    "clim_mean": 19.6266,
+    "anomaly": 0.0654,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-08",
+    "value": 20.5703,
+    "clim_mean": 19.1026,
+    "anomaly": 1.4677,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-09",
+    "value": 20.2078,
+    "clim_mean": 19.5589,
+    "anomaly": 0.6489,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-10",
+    "value": 21.799,
+    "clim_mean": 20.3771,
+    "anomaly": 1.4219,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-11",
+    "value": 22.2412,
+    "clim_mean": 21.4136,
+    "anomaly": 0.8276,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2021-12",
+    "value": 21.4632,
+    "clim_mean": 20.9307,
+    "anomaly": 0.5325,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-01",
+    "value": 19.8654,
+    "clim_mean": 20.2853,
+    "anomaly": -0.4199,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-02",
+    "value": 22.724,
+    "clim_mean": 21.5707,
+    "anomaly": 1.1533,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-03",
+    "value": 22.1105,
+    "clim_mean": 21.773,
+    "anomaly": 0.3375,
+    "valid_frac": 0.914
+   },
+   {
+    "date": "2022-04",
+    "value": 20.7174,
+    "clim_mean": 21.688,
+    "anomaly": -0.9706,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-05",
+    "value": 21.6786,
+    "clim_mean": 21.157,
+    "anomaly": 0.5216,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-06",
+    "value": 20.3696,
+    "clim_mean": 20.1759,
+    "anomaly": 0.1937,
+    "valid_frac": 0.999
+   },
+   {
+    "date": "2022-07",
+    "value": 19.1366,
+    "clim_mean": 19.6266,
+    "anomaly": -0.49,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-08",
+    "value": 19.7007,
+    "clim_mean": 19.1026,
+    "anomaly": 0.5981,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-09",
+    "value": 19.8922,
+    "clim_mean": 19.5589,
+    "anomaly": 0.3333,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-10",
+    "value": 21.3217,
+    "clim_mean": 20.3771,
+    "anomaly": 0.9446,
+    "valid_frac": 0.5
+   },
+   {
+    "date": "2022-11",
+    "value": 22.2296,
+    "clim_mean": 21.4136,
+    "anomaly": 0.816,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2022-12",
+    "value": 18.5074,
+    "clim_mean": 20.9307,
+    "anomaly": -2.4233,
+    "valid_frac": 1.0
+   }
+  ],
+  "ndvi": [
+   {
+    "date": "2024-11",
+    "value": 0.727,
+    "clim_mean": 0.7123,
+    "anomaly": 0.0147,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-12",
+    "value": 0.6351,
+    "clim_mean": 0.5926,
+    "anomaly": 0.0425,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-01",
+    "value": 0.4664,
+    "clim_mean": 0.4289,
+    "anomaly": 0.0375,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-02",
+    "value": 0.4823,
+    "clim_mean": 0.4066,
+    "anomaly": 0.0757,
+    "valid_frac": 0.998
+   },
+   {
+    "date": "2025-03",
+    "value": 0.6743,
+    "clim_mean": 0.5982,
+    "anomaly": 0.0761,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-04",
+    "value": 0.7107,
+    "clim_mean": 0.6954,
+    "anomaly": 0.0153,
+    "valid_frac": 0.632
+   },
+   {
+    "date": "2025-05",
+    "value": 0.7048,
+    "clim_mean": 0.71,
+    "anomaly": -0.0052,
+    "valid_frac": 0.877
+   },
+   {
+    "date": "2025-06",
+    "value": 0.7629,
+    "clim_mean": 0.7545,
+    "anomaly": 0.0084,
+    "valid_frac": 0.804
+   },
+   {
+    "date": "2025-07",
+    "value": 0.6985,
+    "clim_mean": 0.7485,
+    "anomaly": -0.05,
+    "valid_frac": 0.605
+   },
+   {
+    "date": "2025-08",
+    "value": 0.6861,
+    "clim_mean": 0.7258,
+    "anomaly": -0.0397,
+    "valid_frac": 0.836
+   },
+   {
+    "date": "2025-09",
+    "value": null,
+    "clim_mean": 0.7273,
+    "anomaly": null,
+    "valid_frac": 0.306
+   },
+   {
+    "date": "2025-10",
+    "value": 0.7488,
+    "clim_mean": 0.7372,
+    "anomaly": 0.0116,
+    "valid_frac": 0.944
+   },
+   {
+    "date": "2025-11",
+    "value": 0.7372,
+    "clim_mean": 0.7123,
+    "anomaly": 0.0249,
+    "valid_frac": 0.994
+   },
+   {
+    "date": "2025-12",
+    "value": 0.6978,
+    "clim_mean": 0.5926,
+    "anomaly": 0.1052,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2026-01",
+    "value": 0.5991,
+    "clim_mean": 0.4289,
+    "anomaly": 0.1702,
+    "valid_frac": 0.996
+   },
+   {
+    "date": "2026-02",
+    "value": 0.5639,
+    "clim_mean": 0.4066,
+    "anomaly": 0.1573,
+    "valid_frac": 0.974
+   },
+   {
+    "date": "2026-03",
+    "value": 0.6417,
+    "clim_mean": 0.5982,
+    "anomaly": 0.0435,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2026-04",
+    "value": 0.7365,
+    "clim_mean": 0.6954,
+    "anomaly": 0.0411,
+    "valid_frac": 0.998
+   },
+   {
+    "date": "2026-05",
+    "value": 0.7616,
+    "clim_mean": 0.71,
+    "anomaly": 0.0516,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2026-06",
+    "value": 0.7406,
+    "clim_mean": 0.7545,
+    "anomaly": -0.0139,
+    "valid_frac": 0.959
+   },
+   {
+    "date": "2026-07",
+    "value": 0.7496,
+    "clim_mean": 0.7485,
+    "anomaly": 0.0011,
+    "valid_frac": 0.856
+   },
+   {
+    "date": "2026-08",
+    "value": 0.7599,
+    "clim_mean": 0.7258,
+    "anomaly": 0.0341,
+    "valid_frac": 0.94
+   },
+   {
+    "date": "2026-09",
+    "value": null,
+    "clim_mean": 0.7273,
+    "anomaly": null,
+    "valid_frac": 0.249
+   },
+   {
+    "date": "2026-10",
+    "value": 0.7049,
+    "clim_mean": 0.7372,
+    "anomaly": -0.0323,
+    "valid_frac": 0.969
+   }
+  ],
+  "rainfall": [
+   {
+    "date": "2023-10",
+    "value": 98.6104,
+    "clim_mean": 135.0823,
+    "anomaly": -36.4719,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2023-11",
+    "value": 87.2774,
+    "clim_mean": 47.1662,
+    "anomaly": 40.1112,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2023-12",
+    "value": 2.2623,
+    "clim_mean": 18.6403,
+    "anomaly": -16.378,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-01",
+    "value": 8.965,
+    "clim_mean": 14.7824,
+    "anomaly": -5.8174,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-02",
+    "value": 17.0892,
+    "clim_mean": 38.9979,
+    "anomaly": -21.9087,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-03",
+    "value": 83.8298,
+    "clim_mean": 88.1256,
+    "anomaly": -4.2958,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-04",
+    "value": 130.3047,
+    "clim_mean": 109.8689,
+    "anomaly": 20.4358,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-05",
+    "value": 152.3837,
+    "clim_mean": 153.0573,
+    "anomaly": -0.6736,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-06",
+    "value": 202.0207,
+    "clim_mean": 171.4534,
+    "anomaly": 30.5673,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-07",
+    "value": 33.3822,
+    "clim_mean": 100.0129,
+    "anomaly": -66.6307,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-08",
+    "value": 14.3548,
+    "clim_mean": 53.488,
+    "anomaly": -39.1332,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-09",
+    "value": 79.0976,
+    "clim_mean": 135.0646,
+    "anomaly": -55.967,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-10",
+    "value": 208.4996,
+    "clim_mean": 135.0823,
+    "anomaly": 73.4173,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-11",
+    "value": 15.5153,
+    "clim_mean": 47.1662,
+    "anomaly": -31.6509,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2024-12",
+    "value": 0.0,
+    "clim_mean": 18.6403,
+    "anomaly": -18.6403,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-01",
+    "value": 15.6305,
+    "clim_mean": 14.7824,
+    "anomaly": 0.8481,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-02",
+    "value": 44.9644,
+    "clim_mean": 38.9979,
+    "anomaly": 5.9665,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-03",
+    "value": 73.6001,
+    "clim_mean": 88.1256,
+    "anomaly": -14.5255,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-04",
+    "value": 123.0478,
+    "clim_mean": 109.8689,
+    "anomaly": 13.1789,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-05",
+    "value": 152.323,
+    "clim_mean": 153.0573,
+    "anomaly": -0.7343,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-06",
+    "value": 205.4562,
+    "clim_mean": 171.4534,
+    "anomaly": 34.0028,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-07",
+    "value": 23.2091,
+    "clim_mean": 100.0129,
+    "anomaly": -76.8038,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-08",
+    "value": 32.4798,
+    "clim_mean": 53.488,
+    "anomaly": -21.0082,
+    "valid_frac": 1.0
+   },
+   {
+    "date": "2025-09",
+    "value": 112.9544,
+    "clim_mean": 135.0646,
+    "anomaly": -22.1102,
+    "valid_frac": 1.0
+   }
+  ]
+ }
+}

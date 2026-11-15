@@ -1,0 +1,314 @@
+[
+ {
+  "id": "TG",
+  "level": "country",
+  "name": "Togo",
+  "parent_id": null
+ },
+ {
+  "id": "TG-A",
+  "level": "region",
+  "name": "Maritime",
+  "parent_id": "TG"
+ },
+ {
+  "id": "TG-B",
+  "level": "region",
+  "name": "Plateaux",
+  "parent_id": "TG"
+ },
+ {
+  "id": "TG-C",
+  "level": "region",
+  "name": "Centrale",
+  "parent_id": "TG"
+ },
+ {
+  "id": "TG-D",
+  "level": "region",
+  "name": "Kara",
+  "parent_id": "TG"
+ },
+ {
+  "id": "TG-E",
+  "level": "region",
+  "name": "Savanes",
+  "parent_id": "TG"
+ },
+ {
+  "id": "TG-A01",
+  "level": "prefecture",
+  "name": "Agoè-Nyivé",
+  "parent_id": "TG-A"
+ },
+ {
+  "id": "TG-A02",
+  "level": "prefecture",
+  "name": "Avé",
+  "parent_id": "TG-A"
+ },
+ {
+  "id": "TG-A03",
+  "level": "prefecture",
+  "name": "Bas-Mono",
+  "parent_id": "TG-A"
+ },
+ {
+  "id": "TG-A04",
+  "level": "prefecture",
+  "name": "Golfe",
+  "parent_id": "TG-A"
+ },
+ {
+  "id": "TG-A05",
+  "level": "prefecture",
+  "name": "Lacs",
+  "parent_id": "TG-A"
+ },
+ {
+  "id": "TG-A06",
+  "level": "prefecture",
+  "name": "Vo",
+  "parent_id": "TG-A"
+ },
+ {
+  "id": "TG-A07",
+  "level": "prefecture",
+  "name": "Yoto",
+  "parent_id": "TG-A"
+ },
+ {
+  "id": "TG-A08",
+  "level": "prefecture",
+  "name": "Zio",
+  "parent_id": "TG-A"
+ },
+ {
+  "id": "TG-B01",
+  "level": "prefecture",
+  "name": "Agou",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B02",
+  "level": "prefecture",
+  "name": "Akébou",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B03",
+  "level": "prefecture",
+  "name": "Amou",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B04",
+  "level": "prefecture",
+  "name": "Anié",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B05",
+  "level": "prefecture",
+  "name": "Danyi",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B06",
+  "level": "prefecture",
+  "name": "Est-Mono",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B07",
+  "level": "prefecture",
+  "name": "Haho",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B08",
+  "level": "prefecture",
+  "name": "Kloto",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B09",
+  "level": "prefecture",
+  "name": "Kpélé",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B10",
+  "level": "prefecture",
+  "name": "Moyen-Mono",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B11",
+  "level": "prefecture",
+  "name": "Ogou",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-B12",
+  "level": "prefecture",
+  "name": "Wawa",
+  "parent_id": "TG-B"
+ },
+ {
+  "id": "TG-C01",
+  "level": "prefecture",
+  "name": "Blitta",
+  "parent_id": "TG-C"
+ },
+ {
+  "id": "TG-C02",
+  "level": "prefecture",
+  "name": "Mô",
+  "parent_id": "TG-C"
+ },
+ {
+  "id": "TG-C03",
+  "level": "prefecture",
+  "name": "Sotouboua",
+  "parent_id": "TG-C"
+ },
+ {
+  "id": "TG-C04",
+  "level": "prefecture",
+  "name": "Tchamba",
+  "parent_id": "TG-C"
+ },
+ {
+  "id": "TG-C05",
+  "level": "prefecture",
+  "name": "Tchaoudjo",
+  "parent_id": "TG-C"
+ },
+ {
+  "id": "TG-D01",
+  "level": "prefecture",
+  "name": "Assoli",
+  "parent_id": "TG-D"
+ },
+ {
+  "id": "TG-D02",
+  "level": "prefecture",
+  "name": "Bassar",
+  "parent_id": "TG-D"
+ },
+ {
+  "id": "TG-D03",
+  "level": "prefecture",
+  "name": "Binah",
+  "parent_id": "TG-D"
+ },
+ {
+  "id": "TG-D04",
+  "level": "prefecture",
+  "name": "Dankpen",
+  "parent_id": "TG-D"
+ },
+ {
+  "id": "TG-D05",
+  "level": "prefecture",
+  "name": "Doufelgou",
+  "parent_id": "TG-D"
+ },
+ {
+  "id": "TG-D06",
+  "level": "prefecture",
+  "name": "Kéran",
+  "parent_id": "TG-D"
+ },
+ {
+  "id": "TG-D07",
+  "level": "prefecture",
+  "name": "Kozah",
+  "parent_id": "TG-D"
+ },
+ {
+  "id": "TG-E01",
+  "level": "prefecture",
+  "name": "Cinkassé",
+  "parent_id": "TG-E"
+ },
+ {
+  "id": "TG-E02",
+  "level": "prefecture",
+  "name": "Kpendjal",
+  "parent_id": "TG-E"
+ },
+ {
+  "id": "TG-E03",
+  "level": "prefecture",
+  "name": "Kpendjal-Ouest",
+  "parent_id": "TG-E"
+ },
+ {
+  "id": "TG-E04",
+  "level": "prefecture",
+  "name": "Oti",
+  "parent_id": "TG-E"
+ },
+ {
+  "id": "TG-E05",
+  "level": "prefecture",
+  "name": "Oti-Sud",
+  "parent_id": "TG-E"
+ },
+ {
+  "id": "TG-E06",
+  "level": "prefecture",
+  "name": "Tandjoaré",
+  "parent_id": "TG-E"
+ },
+ {
+  "id": "TG-E07",
+  "level": "prefecture",
+  "name": "Tône",
+  "parent_id": "TG-E"
+ },
+ {
+  "id": "lome",
+  "level": "site",
+  "name": "Grand Lomé & Lagune",
+  "parent_id": "TG-A04"
+ },
+ {
+  "id": "aneho",
+  "level": "site",
+  "name": "Aného & Littoral de Kpémé",
+  "parent_id": "TG-A05"
+ },
+ {
+  "id": "kpalime",
+  "level": "site",
+  "name": "Kpalimé & Mont Agou",
+  "parent_id": "TG-B08"
+ },
+ {
+  "id": "sokode",
+  "level": "site",
+  "name": "Sokodé & Corridor Fazao",
+  "parent_id": "TG-C05"
+ },
+ {
+  "id": "kara",
+  "level": "site",
+  "name": "Kara & Massif de Défalé",
+  "parent_id": "TG-D07"
+ },
+ {
+  "id": "dapaong",
+  "level": "site",
+  "name": "Dapaong & Confins Sahéliens",
+  "parent_id": "TG-E07"
+ },
+ {
+  "id": "mango-oti",
+  "level": "site",
+  "name": "Mango & Bassin Fluvial de l'Oti",
+  "parent_id": "TG-E04"
+ }
+]
