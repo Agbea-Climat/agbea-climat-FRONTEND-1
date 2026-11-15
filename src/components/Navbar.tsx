@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { AlertCircle, ChevronDown, Menu, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { AlertCircle, Menu, UserCheck, X } from 'lucide-react';
 import { useApp } from '../context/AppContext.tsx';
 
 export function Navbar() {
@@ -9,33 +9,16 @@ export function Navbar() {
     recheckHealth,
     meta,
     language,
-    mode,
-    profile,
-    profiles,
     setShowProfilePicker,
     updatePreferences,
   } = useApp();
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [modeMenuOpen, setModeMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     setMobileOpen(false);
-    setModeMenuOpen(false);
   }, [location.pathname]);
-
-  useEffect(() => {
-    function handleOutside(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setModeMenuOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleOutside);
-    return () => document.removeEventListener('mousedown', handleOutside);
-  }, []);
 
   const navItems = [
     { to: '/', label: language === 'fr' ? 'Accueil' : 'Home', end: true },
@@ -44,19 +27,6 @@ export function Navbar() {
     { to: '/assistant', label: language === 'fr' ? 'Assistant AGBÉA' : 'AI Chat', end: false },
     { to: '/a-propos', label: language === 'fr' ? 'À propos' : 'Data sources', end: false },
   ];
-
-  const activeProfileObj = profiles.find((p) => p.id === profile);
-  const activeProfileTitle = activeProfileObj
-    ? language === 'fr'
-      ? activeProfileObj.title_fr
-      : activeProfileObj.title_en
-    : null;
-
-  const handleSelectMode = async (targetMode: 'public' | 'scientific', path: string) => {
-    await updatePreferences({ mode: targetMode });
-    setModeMenuOpen(false);
-    navigate(path);
-  };
 
   return (
     <div className="sticky top-0 z-[1100]">
@@ -151,71 +121,14 @@ export function Navbar() {
               </span>
             </div>
 
-            <div className="relative" ref={menuRef}>
-              <button
-                type="button"
-                onClick={() => setModeMenuOpen((v) => !v)}
-                aria-expanded={modeMenuOpen}
-                className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-[#1A5E36] hover:bg-[#154D2C] text-white rounded border border-[#277A49] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-              >
-                <span>
-                  {mode === 'scientific'
-                    ? language === 'fr'
-                      ? 'Mode scientifique'
-                      : 'Scientific mode'
-                    : language === 'fr'
-                    ? 'Mode public'
-                    : 'Public mode'}
-                </span>
-                <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
-              </button>
-
-              {modeMenuOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-white text-[#0F2942] border border-[#DCE3E1] rounded py-1 z-50">
-                  <button
-                    type="button"
-                    onClick={() => handleSelectMode('public', '/grand-public')}
-                    className="w-full text-left px-4 py-2.5 hover:bg-[#F7F9F8] cursor-pointer border-b border-[#DCE3E1]"
-                  >
-                    <div className="text-sm font-semibold text-[#0F2942]">
-                      {language === 'fr' ? 'Mode grand public / Agriculture' : 'Agriculture / Public mode'}
-                    </div>
-                    <div className="text-xs text-[#475569] mt-0.5">
-                      {language === 'fr'
-                        ? 'Conseils simples, sans jargon'
-                        : 'Plain language and seasonal tips'}
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectMode('scientific', '/scientifique')}
-                    className="w-full text-left px-4 py-2.5 hover:bg-[#F7F9F8] cursor-pointer border-b border-[#DCE3E1]"
-                  >
-                    <div className="text-sm font-semibold text-[#0F2942]">
-                      {language === 'fr' ? 'Mode scientifique' : 'Scientific mode'}
-                    </div>
-                    <div className="text-xs text-[#475569] mt-0.5">
-                      {language === 'fr'
-                        ? 'Séries NASA, sources & export CSV'
-                        : 'Time series, sources & CSV export'}
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setModeMenuOpen(false);
-                      setShowProfilePicker(true);
-                    }}
-                    className="w-full text-left px-4 py-2.5 hover:bg-[#F7F9F8] cursor-pointer"
-                  >
-                    <div className="text-xs font-semibold text-[#0E7490]">
-                      {language === 'fr' ? 'Changer de profil' : 'Change profile'}
-                      {activeProfileTitle ? ` (${activeProfileTitle})` : ''}
-                    </div>
-                  </button>
-                </div>
-              )}
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowProfilePicker(true)}
+              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-[#1A5E36] hover:bg-[#154D2C] text-white rounded border border-[#277A49] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <UserCheck className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>{language === 'fr' ? 'Changer de profil' : 'Change profile'}</span>
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -250,30 +163,17 @@ export function Navbar() {
               ))}
             </nav>
 
-            <div className="pt-3 border-t border-[#1E3A5F] grid grid-cols-1 gap-2">
-              <button
-                type="button"
-                onClick={() => handleSelectMode('public', '/grand-public')}
-                className="px-3 py-2.5 text-sm font-semibold bg-[#1A5E36] text-white rounded text-center cursor-pointer"
-              >
-                {language === 'fr' ? 'Mode grand public / Agriculture' : 'Agriculture / Public mode'}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSelectMode('scientific', '/scientifique')}
-                className="px-3 py-2.5 text-sm font-semibold bg-[#0E7490] text-white rounded text-center cursor-pointer"
-              >
-                {language === 'fr' ? 'Mode scientifique' : 'Scientific mode'}
-              </button>
+            <div className="pt-3 border-t border-[#1E3A5F]">
               <button
                 type="button"
                 onClick={() => {
                   setMobileOpen(false);
                   setShowProfilePicker(true);
                 }}
-                className="px-3 py-2 text-xs font-semibold text-[#BAE6FD] text-center cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 text-sm font-semibold bg-[#1A5E36] hover:bg-[#154D2C] text-white rounded cursor-pointer"
               >
-                {language === 'fr' ? 'Changer de profil' : 'Change profile'}
+                <UserCheck className="w-4 h-4" aria-hidden="true" />
+                <span>{language === 'fr' ? 'Changer de profil' : 'Change profile'}</span>
               </button>
             </div>
 
